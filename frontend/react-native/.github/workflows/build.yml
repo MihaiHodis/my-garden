@@ -1,0 +1,32 @@
+name: Generate Build Number
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # aduce tot istoricul Git
+
+      - name: Generate services/build.js
+        run: |
+          DATE=$(date +'%Y%d%m')
+          BUILD=$(git rev-list --count HEAD)
+          mkdir -p services
+          echo "export const BUILD_INFO = '1.${DATE}.${BUILD}';" > services/build.js
+          cat services/build.js
+
+      - name: Commit & push updated build.js
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add services/build.js
+          git commit -m "Update build number [auto]" || echo "Nothing to commit"
+          git push origin main

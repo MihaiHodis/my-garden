@@ -1,0 +1,25 @@
+name: Upload Repository Artifact
+
+on:
+  workflow_run:
+    workflows: ["Generate Build Number"]
+    types:
+      - completed
+
+jobs:
+  upload:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create ZIP artifact
+        run: zip -r repo-backup.zip . -x "*.git*"
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-backup
+          path: repo-backup.zip

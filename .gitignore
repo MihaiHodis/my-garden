@@ -1,0 +1,35 @@
+# Ignore all root files and directories except what we want to track
+/*
+!/backend/
+!/frontend/
+!/.gitignore
+!/GEMINI.md
+
+# --- Backend Ignores ---
+backend/node_modules/
+backend/.env
+backend/config/serviceAccountKey.json
+
+# --- Frontend (Expo) Ignores ---
+frontend/react-native/node_modules/
+frontend/react-native/.expo/
+frontend/react-native/dist/
+frontend/react-native/web-build/
+frontend/react-native/expo-env.d.ts
+frontend/react-native/.kotlin/
+frontend/react-native/*.orig.*
+frontend/react-native/*.jks
+frontend/react-native/*.p8
+frontend/react-native/*.p12
+frontend/react-native/*.key
+frontend/react-native/*.mobileprovision
+frontend/react-native/.metro-health-check*
+frontend/react-native/npm-debug.*
+frontend/react-native/yarn-debug.*
+frontend/react-native/yarn-error.*
+frontend/react-native/.env*.local
+frontend/react-native/*.tsbuildinfo
+
+# --- General ---
+.DS_Store
+*.pem
