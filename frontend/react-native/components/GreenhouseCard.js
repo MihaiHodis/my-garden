@@ -50,19 +50,19 @@ const getGreenhouseImage = (greenhouseId) => {
   return `https://picsum.photos/id/${id}/600/400`;
 };
 
-// --- Fallback unități pentru senzori ---
+// --- Fallback unitÄƒÈ›i pentru senzori ---
 const getDefaultUnit = (type) => {
   switch (type) {
     case "temperature":
-      return "°C";
+      return "Â°C";
     case "humidity":
     case "soil":
-    case "soil_moisture":
       return "%";
     default:
       return "";
   }
 };
+
 
 // --- Custom Switch ---
 const CustomSwitch = ({ value, onValueChange }) => {
@@ -131,7 +131,7 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   // -----------------------------
   useEffect(() => {
     fetchActuatorState(); // initial fetch
-    pollingRef.current = setInterval(fetchActuatorState, 2000); // polling la 2 sec
+    pollingRef.current = setInterval(fetchActuatorState, 10000); // polling la 10 sec
     return () => clearInterval(pollingRef.current);
   }, [actuatorId]);
 
@@ -254,19 +254,36 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
 };
 
 // --- CARD PRINCIPAL ---
-const GreenhouseCard = ({ greenhouse, onPress }) => {
+const GreenhouseCard = ({ greenhouse, sensors: sensorsProp, onPress }) => {
   const [sensors, setSensors] = useState([]);
   const [actuators, setActuators] = useState([]);
+
+  // FuncÈ›ie pentru formatarea orei ultimei citiri
+  const formatReadingTime = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    const options = { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
+    return date.toLocaleString('ro-RO', options);
+  };
 
   useEffect(() => {
     const fetchSensors = async () => {
       try {
-        const { data: sensorList } = await getSensorsByGreenhouse(greenhouse.id);
+        // Folosim prop-ul sensorsProp dacÄƒ existÄƒ, altfel le cerem de la server
+        const sensorList = sensorsProp && sensorsProp.length > 0 
+          ? sensorsProp 
+          : (await getSensorsByGreenhouse(greenhouse.id)).data;
+
         const sensorsWithLast = await Promise.all(
           sensorList.map(async s => {
             const { data: readings } = await getReadingsBySensor(s.id);
             const last = readings[readings.length - 1];
-            return { ...s, value: last?.value ?? "-", unit: s.unit ?? getDefaultUnit(s.type) };
+            return { 
+              ...s, 
+              value: last?.value ?? "-", 
+              unit: s.unit ?? getDefaultUnit(s.type),
+              timestamp: last?.timestamp 
+            };    
           })
         );
         setSensors(sensorsWithLast);
@@ -286,7 +303,7 @@ const GreenhouseCard = ({ greenhouse, onPress }) => {
 
     fetchSensors();
     fetchActuators();
-  }, [greenhouse.id]);
+  }, [greenhouse.id, sensorsProp]);
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
@@ -302,17 +319,16 @@ const GreenhouseCard = ({ greenhouse, onPress }) => {
         </View>
 
         <View style={{ alignItems: "center", marginTop: 14 }}>
-          <View style={{ flexDirection: "row", justifyContent: "center", flexWrap: "wrap" }}>
+          <View style={{ flexDirection: "row", justifyContent: "center", flexWrap: "wrap" }}>      
             {sensors.map(s => (
               <View key={s.id} style={styles.sensorBadge}>
                 <SensorIcon type={s.type} />
                 <Text style={styles.sensorText}>
-                  {s.value} {s.unit}
+                  {s.value}{s.unit} {s.timestamp ? `(${formatReadingTime(s.timestamp)})` : ""}
                 </Text>
               </View>
             ))}
           </View>
-
           <View style={{ marginTop: 4 }}>
             <FavoriteHours greenhouseId={greenhouse.id} />
           </View>

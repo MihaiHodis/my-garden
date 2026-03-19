@@ -4,6 +4,7 @@
 !/frontend/
 !/.gitignore
 !/GEMINI.md
+!/bytestorm.sql
 
 # --- Backend Ignores ---
 backend/node_modules/
