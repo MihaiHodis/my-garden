@@ -131,7 +131,7 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   // -----------------------------
   useEffect(() => {
     fetchActuatorState(); // initial fetch
-    pollingRef.current = setInterval(fetchActuatorState, 2000); // polling la 2 sec
+    pollingRef.current = setInterval(fetchActuatorState, 10000); // polling la 10 sec
     return () => clearInterval(pollingRef.current);
   }, [actuatorId]);
 
