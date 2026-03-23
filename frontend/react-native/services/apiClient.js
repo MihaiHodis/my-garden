@@ -6,7 +6,7 @@ import { Platform } from "react-native";
 
 // Configurable base URL for local development and production
 // Replace '192.168.1.133' with your machine's local IP for physical device testing
-const LOCAL_IP = "192.168.1.137"; 
+const LOCAL_IP = "192.168.1.6"; 
 const PORT = "5000";
 
 // Use 10.0.2.2 for Android emulator, LOCAL_IP for physical devices/iOS
@@ -16,18 +16,11 @@ const BASE_URL = __DEV__
   ? DEV_URL
   : "https://your-new-server-domain.com";
 
-// Mock user for development
-export const MOCK_USER = {
-  uid: "PTIIEpO4RMNgumt8Jnabe7Tsu2G3",
-  getIdToken: async () => "mock-token-for-dev"
-};
-
-
 /**
- * Helper to get the current user, prioritizing mock user in development.
+ * Helper to get the current user.
  */
 export const getEffectiveUser = () => {
-  return __DEV__ ? MOCK_USER : auth.currentUser;
+  return auth.currentUser;
 };
 
 // This is the base client for your server.
@@ -39,38 +32,22 @@ const apiClient = axios.create({
   timeout: 15000, // 15 second timeout
 });
 
-// ▼▼▼ ADAUGĂ ACEST INTERCEPTOR PENTRU SECURITATE ▼▼▼
+// ▼▼▼ COMBINED INTERCEPTOR: Auth + Debugging ▼▼▼
 apiClient.interceptors.request.use(
   async (config) => {
-    // În development, putem folosi un user mock dacă dorim să ignorăm Firebase
-    const user = __DEV__ ? MOCK_USER : auth.currentUser;
+    const user = auth.currentUser;
 
     if (user) {
       try {
-        // În development, returnăm un token fictiv dacă e mock user
         const token = await user.getIdToken();
-
-        // Adaugă token-ul în header-ul de autorizare
+        // Add the authorization header
         config.headers.Authorization = `Bearer ${token}`;
-
-        if (__DEV__) {
-          console.log("Using Development Auth (Mock or Firebase)");
-        }
       } catch (error) {
         console.error("Could not get Auth token", error);
       }
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-// ▲▲▲ SFÂRȘITUL INTERCEPTORULUI DE SECURITATE ▲▲▲
 
-// Add request interceptor for debugging
-apiClient.interceptors.request.use(
-  (config) => {
+    // Now log the final config (including headers)
     console.log("API Request:", {
       method: config.method?.toUpperCase(),
       url: config.url,
@@ -78,6 +55,7 @@ apiClient.interceptors.request.use(
       data: config.data,
       headers: config.headers,
     });
+
     return config;
   },
   (error) => {
@@ -85,6 +63,7 @@ apiClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+// ▲▲▲ END OF COMBINED INTERCEPTOR ▲▲▲
 
 // Add response interceptor for debugging
 apiClient.interceptors.response.use(
@@ -120,6 +99,17 @@ export const getUserById = async (userId) => {
     return response;
   } catch (error) {
     console.error(`Error fetching user ${userId}:`, error);
+    throw error;
+  }
+};
+
+// Sync user with backend (creates user in DB if not exists)
+export const syncUser = async () => {
+  try {
+    const response = await apiClient.get("/users/me");
+    return response;
+  } catch (error) {
+    console.error("Error syncing user:", error);
     throw error;
   }
 };
@@ -257,32 +247,6 @@ export const updateTask = async (taskId, updatedData) => {
     throw error;
   }
 };
-
-/*=================================================================
-      Adaugare functie logare prin firebase - gabi
-  =================================================================
-  
-// =================================================================
-// ALL OTHER EXISTING FUNCTIONS (unchanged)
-// =================================================================
-
-export const login = async (username, password) => {
-  try {
-    const response = await apiClient.get("/users");
-    const user = response.data.find(
-      (user) => user.name === username && user.password === password
-    );
-    if (user) {
-      return user;
-    } else {
-      throw new Error("Invalid credentials");
-    }
-  } catch (error) {
-    console.error("Login API Error:", error);
-    throw new Error("Login failed");
-  }
-};
-*/
 
 // =================================================================
 // REAL-TIME WEATHER (from external API)

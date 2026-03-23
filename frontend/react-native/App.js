@@ -36,17 +36,6 @@ export default function App() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    // În development, putem simula un utilizator logat pentru a evita login-ul real
-    if (__DEV__) {
-      setUser({
-        uid: "PTIIEpO4RMNgumt8Jnabe7Tsu2G3",
-        email: "testuser@local.test",
-        displayName: "Test User",
-      });
-      setLoading(false);
-      return;
-    }
-
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);

@@ -6,13 +6,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // ▼▼▼ YOUR NEW firebaseConfig OBJECT GOES HERE ▼▼▼
 // Copy this from your new project in the Firebase Console.
 const firebaseConfig = {
-  apiKey: "AIzaSyD_re7NcESffl84d9FYkruV6LHce-GM1mM",
-  authDomain: "smart-greenhouse-auth.firebaseapp.com",
-  projectId: "smart-greenhouse-auth",
-  storageBucket: "smart-greenhouse-auth.firebasestorage.app",
-  messagingSenderId: "142275968821",
-  appId: "1:142275968821:web:bd8e1112a4bd54d07fd67c",
-  measurementId: "G-7F8D32W99D"
+  apiKey: "AIzaSyDSQS2santRhXXikgw5Zs10uBs97wLp4tM",
+  authDomain: "my-garden-56897.firebaseapp.com",
+  projectId: "my-garden-56897",
+  storageBucket: "my-garden-56897.firebasestorage.app",
+  messagingSenderId: "223563983740",
+  appId: "1:223563983740:web:b6127f59b33fcce44452f9",
+  measurementId: "G-KYQ44Q505N"
 };
 // ▲▲▲ END OF YOUR NEW CONFIG ▲▲▲
 

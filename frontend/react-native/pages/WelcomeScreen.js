@@ -1,14 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator, Animated } from 'react-native';
-import { getEffectiveUser, getUserById } from '../services/apiClient';
+import { getEffectiveUser, getUserById, syncUser } from '../services/apiClient';
 
 const avatarMap = {
   'avatar_1.png': require('../assets/avatars/avatar_1.png'),
-  'avatar_2.png': require('../assets/avatars/avatar_2.png'),
-  'avatar_3.png': require('../assets/avatars/avatar_3.png'),
-  'avatar_4.png': require('../assets/avatars/avatar_4.png'),
-  'avatar_5.png': require('../assets/avatars/avatar_5.png'),
-  'avatar_6.png': require('../assets/avatars/avatar_6.png'),
+// ... (rest of avatar map)
 };
 
 // Receive `onWelcomeFinish` as a prop
@@ -21,21 +17,37 @@ const WelcomeScreen = ({ onWelcomeFinish }) => {
 
   React.useEffect(() => {
     const fetchUserData = async () => {
-      // 🔹 Obține utilizatorul logat (Mock în dev, Firebase în prod)
-      const currentUser = getEffectiveUser();
+      // 🔹 Wait up to 3 seconds for Firebase to report the user
+      let currentUser = getEffectiveUser();
+      let attempts = 0;
+      
+      while (!currentUser && attempts < 10) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        currentUser = getEffectiveUser();
+        attempts++;
+      }
+
       if (currentUser) {
         try {
+          console.log("WelcomeScreen: User found, starting sync for:", currentUser.email);
+          
+          // 1. Sync user with DB (creates entry if missing)
+          const syncResponse = await syncUser();
+          console.log("WelcomeScreen: Sync successful", syncResponse.status);
+          
+          // 2. Fetch the newly created/existing user data
           const response = await getUserById(currentUser.uid);
           setUserData(response.data);
         } catch (error) {
-          console.error("WelcomeScreen: Failed to fetch user data", error);
-          setUserData({ nickname: 'Utilizator', avatar: 'avatar_1.png' });
+          console.error("WelcomeScreen: Failed to sync or fetch user data", error.message);
+          // Fallback so the user isn't stuck on a loading screen
+          setUserData({ nickname: currentUser.email?.split('@')[0] || 'Utilizator', avatar: 'avatar_1.png' });
         } finally {
           setLoading(false);
         }
-      } else if (onWelcomeFinish) {
-          // Fallback if user is somehow null
-          onWelcomeFinish();
+      } else {
+        console.error("WelcomeScreen: No user found after waiting.");
+        if (onWelcomeFinish) onWelcomeFinish();
       }
     };
 
