@@ -39,6 +39,11 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
+      // If the user is logging out (firebaseUser becomes null), 
+      // reset showWelcome so the next login sees the animation.
+      if (!firebaseUser) {
+        setShowWelcome(false);
+      }
     });
     return unsubscribe;
   }, []);
