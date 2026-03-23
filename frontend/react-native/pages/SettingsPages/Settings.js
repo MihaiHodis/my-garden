@@ -40,9 +40,7 @@ const Settings = () => {
 
   const handleLogout = async () => {
     try {
-      if (!__DEV__) {
-        await signOut(auth);
-      }
+      await signOut(auth);
       console.log("Logout functionality executed");
     } catch (error) {
       console.error("Logout error:", error);
