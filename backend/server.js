@@ -3,7 +3,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import "./services/scheduler.js";
-import authRoutes from "./routes/authRoutes.js";
 import dataRoutes from "./routes/dataRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 import greenhouseRoutes from "./routes/greenhouseRoutes.js";
@@ -30,7 +29,6 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", authRoutes);
 app.use("/api/data", dataRoutes); // existing: POST /api/data/:device_uid
 app.use("/api/sensors", dataRoutes); // new alias as requested: POST /api/sensors/data
 app.use("/users", usersRoutes);

@@ -2,16 +2,6 @@
 import admin from "../config/firebaseAdmin.js";
 
 export const verifyFirebaseToken = async (req, res, next) => {
-  // --- BYPASS PENTRU DEZVOLTARE LOCALĂ ---
-  if (process.env.NODE_ENV === "development") {
-    req.user = {
-      uid: "PTIIEpO4RMNgumt8Jnabe7Tsu2G3",
-      email: "testuser@local.test"
-    };
-    return next();
-  }
-  // ----------------------------------------
-
   try {
     // Extrage token-ul din header-ul Authorization
     const authHeader = req.headers.authorization;
