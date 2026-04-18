@@ -5,6 +5,8 @@
 !/.gitignore
 !/GEMINI.md
 !/bytestorm.sql
+!/package.json
+!/package-lock.json
 
 # --- Backend Ignores ---
 backend/node_modules/
