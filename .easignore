@@ -1,0 +1,10 @@
+# Only ignore heavy/unnecessary directories
+backend/node_modules/
+frontend/react-native/node_modules/
+frontend/react-native/.expo/
+hardware/
+cloud/
+antreprenoriat/
+tips/
+IMPLEMENTARE EFECTIVA/
+.git/
