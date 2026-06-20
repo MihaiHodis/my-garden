@@ -10,11 +10,11 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import GreenhouseCard from "../components/GreenhouseCard";
 import { getGreenhouses, getSensors, getUserById, getEffectiveUser } from "../services/apiClient";
 import WeatherWidget from "../components/WeatherWidget";
-import { useFonts, Roboto_700Bold } from "@expo-google-fonts/roboto";
+import { colors, typography, spacing, radius } from "../components/GlobalStyles/theme";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -25,6 +25,7 @@ const avatarImages = {
   "avatar_4.png": require("../assets/avatars/avatar_4.png"),
   "avatar_5.png": require("../assets/avatars/avatar_5.png"),
   "avatar_6.png": require("../assets/avatars/avatar_6.png"),
+  "Den.jpg": require("../assets/avatars/Den.jpg"),
 };
 
 const HomeScreen = () => {
@@ -54,6 +55,8 @@ const HomeScreen = () => {
         getUserById(currentUser.uid),
       ]);
 
+      console.log("DEBUG: Loaded user data in HomeScreen:", userRes.data);
+
       setGreenhouses(ghRes.data);
       setSensors(sRes.data);
       setUser(userRes.data);
@@ -65,9 +68,11 @@ const HomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -77,8 +82,8 @@ const HomeScreen = () => {
   if (loading || !user) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-        <Text style={{ marginTop: 8 }}>Se încarcă datele...</Text>
+        <ActivityIndicator size="large" color={colors.primaryMuted} />
+        <Text style={styles.loadingText}>Se încarcă datele...</Text>
       </View>
     );
   }
@@ -88,13 +93,13 @@ const HomeScreen = () => {
       {/* Header Sticky */}
       <View style={styles.headerSticky}>
         <Image
-          source={require("../assets/logo.png")}
+          source={require("../assets/mygarden-logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
         <TouchableOpacity
           style={styles.userInfo}
-          onPress={() => navigation.navigate("Account")}
+          onPress={() => navigation.navigate("Account", { userId: user.firebase_uid })}
         >
           <Text style={styles.userName}>{user.nickname}</Text>
           <Image
@@ -118,6 +123,7 @@ const HomeScreen = () => {
 
         {/* Header Serele mele */}
         <View style={styles.headerContainer}>
+          <Text style={styles.headerEyebrow}>MONITORIZARE</Text>
           <Text
             style={styles.headerText}
             onLayout={(event) => setTextWidth(event.nativeEvent.layout.width)}
@@ -147,8 +153,14 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f5f5" },
-  loadingContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
+  container: { flex: 1, backgroundColor: colors.background },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.background,
+  },
+  loadingText: { ...typography.caption, color: colors.textSecondary, marginTop: spacing.xs },
 
   headerSticky: {
     position: "absolute",
@@ -156,49 +168,58 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 70,
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing.md,
     justifyContent: "space-between",
     zIndex: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderBottomColor: colors.border,
   },
-  logo: { height: 40, width: 150 },
+  logo: { height: 58, width: 200 },
   userInfo: { flexDirection: "row", alignItems: "center" },
   userName: {
-    fontSize: 14,
-    fontFamily: "Roboto_700Bold",
-    color: "#AFD6B1",
-    marginRight: 8,
+    ...typography.bodyStrong,
+    color: colors.primary,
+    marginRight: spacing.xs,
     marginBottom: 3,
   },
-  avatar: { width: 40, height: 40, borderRadius: 20, marginBottom: 3 },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginBottom: 3,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+  },
 
   greenhousesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "flex-start",
-    paddingHorizontal: 16,
-    gap: 16,
+    paddingHorizontal: spacing.md,
+    gap: spacing.md,
     paddingTop: 80, // spațiu pentru header sticky
-    paddingBottom: 20, // 👈 CHANGE FROM 100 to 140
+    paddingBottom: spacing.lg,
   },
 
-  headerContainer: { marginTop: 16, marginBottom: 12, marginHorizontal: 16 },
+  headerContainer: { marginTop: spacing.md, marginBottom: spacing.sm, marginHorizontal: spacing.md },
+  headerEyebrow: {
+    ...typography.eyebrow,
+    color: colors.accentText,
+    marginBottom: 2,
+  },
   headerText: {
-    fontSize: 22,
-    fontFamily: "Roboto_700Bold",
-    color: "#000",
-    textTransform: "uppercase",
+    ...typography.title,
+    color: colors.textPrimary,
   },
   headerLine: {
     height: 3,
-    backgroundColor: "#AFD6B1",
-    marginTop: 4,
-    borderRadius: 2,
+    backgroundColor: colors.accent,
+    marginTop: spacing.xxs,
+    borderRadius: radius.pill,
   },
 });
 

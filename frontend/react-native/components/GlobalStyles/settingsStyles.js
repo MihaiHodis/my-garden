@@ -1,5 +1,6 @@
 // components/settings_components/settingsStyles.js - React Native Settings Styles
 import { StyleSheet, Dimensions } from "react-native";
+import { colors, fonts, radius } from "./theme";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -7,7 +8,7 @@ export const settingsStyles = StyleSheet.create({
   // Layout Styles
   container: {
     flexGrow: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: colors.background,
   },
 
   maxWidthContainer: {
@@ -19,7 +20,7 @@ export const settingsStyles = StyleSheet.create({
     paddingHorizontal: 16,
     width: "100%",
     zIndex: 1000,
-    backgroundColor: "#fff", // Add background to prevent content showing through
+    backgroundColor: colors.surface, // Add background to prevent content showing through
   },
 
   maxWidthContainerScroll: {
@@ -32,9 +33,9 @@ export const settingsStyles = StyleSheet.create({
   },
 
   paper: {
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -84,14 +85,14 @@ export const settingsStyles = StyleSheet.create({
   headerTitle: {
     fontSize: 20, // 1.25rem
     fontWeight: "600",
-    color: "black",
+    color: colors.textPrimary,
     marginBottom: 8,
     textAlign: "center",
   },
 
   headerSubtitle: {
     fontSize: 14, // 0.875rem
-    color: "black",
+    color: colors.textPrimary,
     opacity: 0.9,
     textAlign: "center",
     paddingHorizontal: 20, // To avoid overlap with back icon
@@ -123,7 +124,7 @@ export const settingsStyles = StyleSheet.create({
 
   profileEmail: {
     fontSize: 14, // 0.875rem
-    color: "#666",
+    color: colors.textSecondary,
     textAlign: "center",
   },
 
@@ -134,7 +135,7 @@ export const settingsStyles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 16,
     padding: 12,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 8,
   },
 
@@ -145,7 +146,7 @@ export const settingsStyles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 4,
   },
 
@@ -163,12 +164,12 @@ export const settingsStyles = StyleSheet.create({
   fieldValue: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#000",
+    color: colors.textPrimary,
   },
 
   fieldValueEmail: {
     fontSize: 16,
-    color: "#000",
+    color: colors.textPrimary,
   },
 
   // Input Styles
@@ -177,11 +178,11 @@ export const settingsStyles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 4,
     fontSize: 16,
     marginRight: 8,
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
   },
 
   // Button Styles - Base
@@ -206,7 +207,7 @@ export const settingsStyles = StyleSheet.create({
 
   // Button Variants
   editButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -217,13 +218,13 @@ export const settingsStyles = StyleSheet.create({
   },
 
   editButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
 
   saveButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -235,13 +236,13 @@ export const settingsStyles = StyleSheet.create({
   },
 
   saveButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
 
   cancelButton: {
-    backgroundColor: "#666",
+    backgroundColor: colors.textSecondary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -252,13 +253,13 @@ export const settingsStyles = StyleSheet.create({
   },
 
   cancelButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
 
   deleteButton: {
-    backgroundColor: "#dc3545",
+    backgroundColor: colors.error,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -269,13 +270,13 @@ export const settingsStyles = StyleSheet.create({
   },
 
   deleteButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
 
   retryButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -286,7 +287,7 @@ export const settingsStyles = StyleSheet.create({
   },
 
   retryButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -299,7 +300,7 @@ export const settingsStyles = StyleSheet.create({
   avatarSelectionLabel: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#333",
+    color: colors.textPrimary,
     marginBottom: 16,
   },
 
@@ -308,7 +309,7 @@ export const settingsStyles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-around",
     padding: 20,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 12,
   },
 
@@ -316,11 +317,11 @@ export const settingsStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 12,
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#e0e0e0",
-    shadowColor: "#000",
+    borderColor: colors.border,
+    shadowColor: colors.textPrimary,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -337,11 +338,11 @@ export const settingsStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 12,
-    backgroundColor: "#e8f5e8",
+    backgroundColor: 'rgba(168,216,74,0.18)',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#2e7d32",
-    shadowColor: "#2e7d32",
+    borderColor: colors.primary,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -364,14 +365,14 @@ export const settingsStyles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     marginBottom: 20,
   },
 
   loadingSkeletonName: {
     width: 150,
     height: 24,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     marginBottom: 8,
     borderRadius: 4,
   },
@@ -379,7 +380,7 @@ export const settingsStyles = StyleSheet.create({
   loadingSkeletonEmail: {
     width: 200,
     height: 16,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 4,
   },
 
@@ -389,23 +390,23 @@ export const settingsStyles = StyleSheet.create({
   },
 
   errorMessage: {
-    color: "#dc3545",
+    color: colors.error,
     marginBottom: 16,
     textAlign: "center",
     fontSize: 16,
   },
 
   errorAlert: {
-    backgroundColor: "#f8d7da",
+    backgroundColor: 'rgba(192,73,47,0.12)',
     borderWidth: 1,
-    borderColor: "#f5c6cb",
+    borderColor: colors.error,
     borderRadius: 8,
     padding: 12,
     width: "100%",
   },
 
   errorAlertText: {
-    color: "#721c24",
+    color: colors.error,
     fontSize: 14,
     textAlign: "center",
   },
@@ -425,20 +426,21 @@ export const settingsStyles = StyleSheet.create({
   },
 
   footerText: {
-    fontSize: 14, // 0.875rem
-    color: "#666",
+    fontFamily: fonts.body,
+    fontSize: 13,
+    color: colors.textTertiary,
     textAlign: "center",
   },
 
   // Avatar Component Styles
   avatarWrapper: {
     borderRadius: 60, // Will be adjusted based on size
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "#e0e0e0",
+    borderColor: colors.border,
   },
 
   avatarImage: {
@@ -477,7 +479,7 @@ export const settingsStyles = StyleSheet.create({
     flex: 1,
   },
   fieldInputEditing: {
-    borderColor: "#2e7d32",
+    borderColor: colors.primary,
     borderWidth: 2,
   },
   nicknameActions: {
@@ -493,7 +495,7 @@ export const settingsStyles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: screenWidth < 400 ? "space-around" : "space-between",
     padding: 20,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 12,
   },
 });
@@ -504,9 +506,9 @@ export const aboutStyles = StyleSheet.create({
 
   // Override paper margin for About page
   aboutPaper: {
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -541,7 +543,7 @@ export const aboutStyles = StyleSheet.create({
     fontSize: 20, // 1.25rem
     fontWeight: "600",
     marginLeft: 8,
-    color: "#333",
+    color: colors.textPrimary,
     textAlign: "center",
     flex: 1,
   },
@@ -551,21 +553,21 @@ export const aboutStyles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
     lineHeight: 24, // 1.6 line height
-    color: "#333",
+    color: colors.textPrimary,
     textAlign: "center",
   },
 
   descriptionSecondaryText: {
     fontSize: 16,
     lineHeight: 24, // 1.6 line height
-    color: "#666",
+    color: colors.textSecondary,
     textAlign: "center",
   },
 
   // Dropdown/Expandable styles
   dropdownItem: {
     borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+    borderBottomColor: colors.border,
     marginBottom: 8,
   },
 
@@ -586,7 +588,7 @@ export const aboutStyles = StyleSheet.create({
   dropdownHeaderText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#333",
+    color: colors.textPrimary,
     textAlign: "center",
     flex: 1,
   },
@@ -597,7 +599,7 @@ export const aboutStyles = StyleSheet.create({
 
   dropdownContentText: {
     fontSize: 14, // 0.875rem
-    color: "#666",
+    color: colors.textSecondary,
     lineHeight: 22, // 1.6 line height
     textAlign: "center",
   },
@@ -609,14 +611,14 @@ export const aboutStyles = StyleSheet.create({
 
   versionLabel: {
     fontSize: 14, // 0.875rem
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 8,
   },
 
   versionNumber: {
     fontSize: 14.4, // 0.9rem
     fontWeight: "600",
-    color: "#2e7d32",
+    color: colors.primary,
   },
 });
 
@@ -625,30 +627,30 @@ export const getAvatarStyle = (size) => ({
   width: size,
   height: size,
   borderRadius: size / 2,
-  backgroundColor: "#f0f0f0",
+  backgroundColor: colors.surfaceMuted,
   alignItems: "center",
   justifyContent: "center",
   overflow: "hidden",
   borderWidth: 2,
-  borderColor: "#e0e0e0",
+  borderColor: colors.border,
 });
 
 // Color constants
 export const settingsColors = {
-  primary: "#2e7d32",
-  background: "#f5f5f5",
-  surface: "white",
-  error: "#dc3545",
-  textPrimary: "#000",
-  textSecondary: "#666",
-  textTertiary: "#999",
-  border: "#e0e0e0",
-  inputBorder: "#ccc",
-  success: "#28a745",
-  warning: "#ffc107",
-  info: "#17a2b8",
-  light: "#f8f9fa",
-  dark: "#343a40",
+  primary: colors.primary,
+  background: colors.background,
+  surface: colors.surface,
+  error: colors.error,
+  textPrimary: colors.textPrimary,
+  textSecondary: colors.textSecondary,
+  textTertiary: colors.textTertiary,
+  border: colors.border,
+  inputBorder: colors.border,
+  success: colors.success,
+  warning: colors.warning,
+  info: colors.info,
+  light: colors.surfaceMuted,
+  dark: colors.bark,
 };
 
 // Animation helper (since CSS animations don't work in RN)
@@ -678,29 +680,29 @@ export const contactStyles = StyleSheet.create({
 
   textInput: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
     fontSize: 16,
-    backgroundColor: "white",
-    color: "#333",
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
   },
 
   textInputFocused: {
-    borderColor: "#2e7d32",
+    borderColor: colors.primary,
     borderWidth: 2,
   },
 
   textInputMultiline: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
     fontSize: 16,
-    backgroundColor: "white",
-    color: "#333",
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
     textAlignVertical: "top", // Android alignment for multiline
     minHeight: 120, // Equivalent to 6 rows
   },
@@ -708,28 +710,28 @@ export const contactStyles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 8,
   },
 
   inputLabelRequired: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 8,
   },
 
   // Picker/Dropdown styles
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
     overflow: "hidden",
   },
 
   pickerContainerFocused: {
-    borderColor: "#2e7d32",
+    borderColor: colors.primary,
     borderWidth: 2,
   },
 
@@ -737,7 +739,7 @@ export const contactStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: "#333",
+    color: colors.textPrimary,
   },
 
   // Custom dropdown styles (if needed)
@@ -748,19 +750,19 @@ export const contactStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
   },
 
   dropdownButtonText: {
     fontSize: 16,
-    color: "#333",
+    color: colors.textPrimary,
   },
 
   dropdownButtonPlaceholder: {
     fontSize: 16,
-    color: "#999",
+    color: colors.textTertiary,
   },
 
   // Submit button styles
@@ -777,7 +779,7 @@ export const contactStyles = StyleSheet.create({
   },
 
   submitButtonDisabled: {
-    backgroundColor: "#cccccc",
+    backgroundColor: colors.border,
     borderRadius: 8,
     paddingVertical: 16,
     paddingHorizontal: 24,
@@ -789,13 +791,13 @@ export const contactStyles = StyleSheet.create({
   },
 
   submitButtonText: {
-    color: "black",
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
   },
 
   submitButtonTextDisabled: {
-    color: "#888",
+    color: colors.textTertiary,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -806,16 +808,16 @@ export const contactStyles = StyleSheet.create({
   },
 
   alertSuccess: {
-    backgroundColor: "#d4edda",
-    borderColor: "#c3e6cb",
+    backgroundColor: 'rgba(74,122,82,0.14)',
+    borderColor: colors.success,
     borderWidth: 1,
     borderRadius: 8,
     padding: 16,
   },
 
   alertError: {
-    backgroundColor: "#f8d7da",
-    borderColor: "#f5c6cb",
+    backgroundColor: 'rgba(192,73,47,0.12)',
+    borderColor: colors.error,
     borderWidth: 1,
     borderRadius: 8,
     padding: 16,
@@ -827,17 +829,17 @@ export const contactStyles = StyleSheet.create({
   },
 
   alertTextSuccess: {
-    color: "#155724",
+    color: colors.success,
   },
 
   alertTextError: {
-    color: "#721c24",
+    color: colors.error,
   },
 
   // Contact info styles
   contactInfoText: {
     fontSize: 14, // 0.875rem
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 12,
   },
 
@@ -850,20 +852,20 @@ export const contactStyles = StyleSheet.create({
 
   contactInfoValue: {
     fontSize: 14, // 0.875rem
-    color: "black",
+    color: colors.textPrimary,
     fontWeight: "500",
   },
 
   // Form validation styles
   errorText: {
-    color: "#dc3545",
+    color: colors.error,
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,
   },
 
   requiredAsterisk: {
-    color: "#dc3545",
+    color: colors.error,
   },
 });
 
@@ -871,7 +873,7 @@ export const contactStyles = StyleSheet.create({
 export const settingsUIStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: colors.background,
   },
 
   scrollView: {
@@ -886,16 +888,18 @@ export const settingsUIStyles = StyleSheet.create({
   },
 
   settingsCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    shadowColor: "#000000",
+    backgroundColor: colors.surface,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: colors.canopy,
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 6,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 16,
+    elevation: 3,
     overflow: "hidden",
   },
 
@@ -908,8 +912,9 @@ export const settingsUIStyles = StyleSheet.create({
   },
 
   activeItem: {
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.surfaceMuted,
     borderLeftWidth: 4,
+    borderLeftColor: colors.accent,
   },
 
   iconContainer: {
@@ -923,24 +928,25 @@ export const settingsUIStyles = StyleSheet.create({
   },
 
   primaryText: {
+    fontFamily: fonts.bodySemiBold,
     fontSize: 16,
-    fontWeight: "500",
-    color: "#212121",
+    color: colors.textPrimary,
     marginBottom: 2,
   },
 
   logoutText: {
-    color: "#f44336",
+    color: colors.error,
   },
 
   secondaryText: {
+    fontFamily: fonts.body,
     fontSize: 14,
-    color: "#757575",
+    color: colors.textSecondary,
   },
 
   divider: {
     height: 1,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: colors.divider,
     marginLeft: 72, // Align with text, accounting for icon space
   },
 });
@@ -964,24 +970,24 @@ export const accountStyles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
     textAlign: "center",
-    color: "#333",
+    color: colors.textPrimary,
   },
 
   profileEmail: {
     fontSize: 14, // 0.875rem
-    color: "#666",
+    color: colors.textSecondary,
     textAlign: "center",
   },
 
   // Avatar component styles
   avatarWrapper: {
     borderRadius: 60, // Will be adjusted based on size
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "#e0e0e0",
+    borderColor: colors.border,
   },
 
   avatarImage: {
@@ -1004,7 +1010,7 @@ export const accountStyles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 16,
     padding: 12,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 8,
   },
 
@@ -1015,7 +1021,7 @@ export const accountStyles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 4,
   },
 
@@ -1033,12 +1039,12 @@ export const accountStyles = StyleSheet.create({
   fieldValue: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#000",
+    color: colors.textPrimary,
   },
 
   fieldValueEmail: {
     fontSize: 16,
-    color: "#000",
+    color: colors.textPrimary,
   },
 
   // Input styles
@@ -1047,16 +1053,16 @@ export const accountStyles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.border,
     borderRadius: 4,
     fontSize: 16,
     marginRight: 8,
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
   },
 
   // Button styles for field editing
   fieldEditButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -1067,14 +1073,14 @@ export const accountStyles = StyleSheet.create({
   },
 
   fieldEditButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
     marginLeft: 4,
   },
 
   fieldSaveButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -1086,7 +1092,7 @@ export const accountStyles = StyleSheet.create({
   },
 
   fieldSaveButtonDisabled: {
-    backgroundColor: "#cccccc",
+    backgroundColor: colors.border,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -1098,13 +1104,13 @@ export const accountStyles = StyleSheet.create({
   },
 
   fieldSaveButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
 
   fieldCancelButton: {
-    backgroundColor: "#666",
+    backgroundColor: colors.textSecondary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -1115,7 +1121,7 @@ export const accountStyles = StyleSheet.create({
   },
 
   fieldCancelButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -1128,7 +1134,7 @@ export const accountStyles = StyleSheet.create({
   avatarSelectionLabel: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#333",
+    color: colors.textPrimary,
     marginBottom: 16,
     textAlign: "center",
   },
@@ -1138,7 +1144,7 @@ export const accountStyles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-around",
     padding: 20,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 12,
   },
 
@@ -1146,11 +1152,11 @@ export const accountStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 12,
-    backgroundColor: "white",
+    backgroundColor: colors.surface,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#e0e0e0",
-    shadowColor: "#000",
+    borderColor: colors.border,
+    shadowColor: colors.textPrimary,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -1167,11 +1173,11 @@ export const accountStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 12,
-    backgroundColor: "#e8f5e8",
+    backgroundColor: 'rgba(168,216,74,0.18)',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#2e7d32",
-    shadowColor: "#2e7d32",
+    borderColor: colors.primary,
+    shadowColor: colors.primary,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -1194,14 +1200,14 @@ export const accountStyles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     marginBottom: 20,
   },
 
   loadingSkeletonName: {
     width: 150,
     height: 24,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     marginBottom: 8,
     borderRadius: 4,
   },
@@ -1209,7 +1215,7 @@ export const accountStyles = StyleSheet.create({
   loadingSkeletonEmail: {
     width: 200,
     height: 16,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 4,
   },
 
@@ -1220,29 +1226,29 @@ export const accountStyles = StyleSheet.create({
   },
 
   errorMessage: {
-    color: "#dc3545",
+    color: colors.error,
     marginBottom: 16,
     textAlign: "center",
     fontSize: 16,
   },
 
   errorAlert: {
-    backgroundColor: "#f8d7da",
+    backgroundColor: 'rgba(192,73,47,0.12)',
     borderWidth: 1,
-    borderColor: "#f5c6cb",
+    borderColor: colors.error,
     borderRadius: 8,
     padding: 12,
     width: "100%",
   },
 
   errorAlertText: {
-    color: "#721c24",
+    color: colors.error,
     fontSize: 14,
     textAlign: "center",
   },
 
   retryButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -1253,7 +1259,7 @@ export const accountStyles = StyleSheet.create({
   },
 
   retryButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -1265,7 +1271,7 @@ export const accountStyles = StyleSheet.create({
   },
 
   deleteButton: {
-    backgroundColor: "#dc3545",
+    backgroundColor: colors.error,
     borderRadius: 4,
     flexDirection: "row",
     alignItems: "center",
@@ -1276,7 +1282,7 @@ export const accountStyles = StyleSheet.create({
   },
 
   deleteButtonText: {
-    color: "white",
+    color: colors.surface,
     fontSize: 14,
     fontWeight: "500",
     marginLeft: 8,
@@ -1296,14 +1302,14 @@ export const moduleStyles = StyleSheet.create({
   contactSupportTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "black",
+    color: colors.textPrimary,
     marginBottom: 12,
     textAlign: "center",
   },
 
   contactSupportDescription: {
     fontSize: 15,
-    color: "#555",
+    color: colors.textSecondary,
     textAlign: "center",
     lineHeight: 22,
     marginBottom: 24,
@@ -1315,7 +1321,7 @@ export const moduleStyles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 5,
@@ -1325,7 +1331,7 @@ export const moduleStyles = StyleSheet.create({
   },
 
   contactSupportButtonText: {
-    color: "black",
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
@@ -1334,16 +1340,16 @@ export const moduleStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "black",
+    color: colors.textPrimary,
     marginBottom: 20,
     textAlign: "center",
   },
 
   categoriesContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
     borderRadius: 12,
     overflow: "hidden",
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -1354,7 +1360,7 @@ export const moduleStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
     minHeight: 80,
   },
 
@@ -1375,13 +1381,13 @@ export const moduleStyles = StyleSheet.create({
   categoryTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333",
+    color: colors.textPrimary,
     marginBottom: 4,
   },
 
   categoryDescription: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     lineHeight: 20,
   },
 
@@ -1391,7 +1397,7 @@ export const moduleStyles = StyleSheet.create({
 
   categoryDivider: {
     height: 1,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     marginLeft: 92, // Icon width + margin + padding
   },
 
@@ -1399,7 +1405,7 @@ export const moduleStyles = StyleSheet.create({
   infoTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "black",
+    color: colors.textPrimary,
     marginBottom: 12,
     alignContent: "center",
     textAlign: "center",
@@ -1407,7 +1413,7 @@ export const moduleStyles = StyleSheet.create({
 
   infoText: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     lineHeight: 22,
     alignContent: "center",
     textAlign: "center",
@@ -1422,7 +1428,7 @@ export const moduleStyles = StyleSheet.create({
   progressBar: {
     width: "100%",
     height: 8,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: colors.border,
     borderRadius: 4,
     marginBottom: 8,
     overflow: "hidden",
@@ -1430,13 +1436,13 @@ export const moduleStyles = StyleSheet.create({
 
   progressFill: {
     height: "100%",
-    backgroundColor: "#4caf50",
+    backgroundColor: colors.success,
     borderRadius: 4,
   },
 
   progressText: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     fontWeight: "500",
   },
 
@@ -1474,7 +1480,7 @@ export const moduleStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
@@ -1484,26 +1490,26 @@ export const moduleStyles = StyleSheet.create({
   stepNumber: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#999",
+    color: colors.textTertiary,
   },
 
   stepNumberActive: {
-    color: "#2e7d32",
+    color: colors.primary,
   },
 
   stepNumberCompleted: {
-    color: "#4caf50",
+    color: colors.success,
   },
 
   stepTitle: {
     fontSize: 15,
-    color: "#333",
+    color: colors.textPrimary,
     fontWeight: "500",
     flex: 1,
   },
 
   stepTitleActive: {
-    color: "#2e7d32",
+    color: colors.primary,
     fontWeight: "600",
   },
 
@@ -1515,7 +1521,7 @@ export const moduleStyles = StyleSheet.create({
 
   currentStepNumber: {
     fontSize: 14,
-    color: "black",
+    color: colors.textPrimary,
     fontWeight: "600",
     textTransform: "uppercase",
     letterSpacing: 1,
@@ -1525,13 +1531,13 @@ export const moduleStyles = StyleSheet.create({
   currentStepTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "black",
+    color: colors.textPrimary,
     textAlign: "center",
   },
 
   stepContent: {
     fontSize: 16,
-    color: "#444",
+    color: colors.textPrimary,
     lineHeight: 24,
     marginBottom: 20,
     textAlign: "justify",
@@ -1539,7 +1545,7 @@ export const moduleStyles = StyleSheet.create({
 
   // Tips Section
   tipsContainer: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -1550,13 +1556,13 @@ export const moduleStyles = StyleSheet.create({
   tipsTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "black",
+    color: colors.textPrimary,
     marginBottom: 12,
   },
 
   tipText: {
     fontSize: 14,
-    color: "#555",
+    color: colors.textSecondary,
     lineHeight: 20,
     marginBottom: 8,
     paddingLeft: 8,
@@ -1564,12 +1570,12 @@ export const moduleStyles = StyleSheet.create({
 
   // Complete Step Button
   completeStepButton: {
-    backgroundColor: "#4caf50",
+    backgroundColor: colors.success,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -1577,17 +1583,17 @@ export const moduleStyles = StyleSheet.create({
   },
 
   completedStepButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: colors.primary,
   },
 
   completeStepButtonText: {
-    color: "#fff",
+    color: colors.surface,
     fontSize: 16,
     fontWeight: "600",
   },
 
   completedStepButtonText: {
-    color: "#fff",
+    color: colors.surface,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -1606,7 +1612,7 @@ export const moduleStyles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 3,
@@ -1614,17 +1620,17 @@ export const moduleStyles = StyleSheet.create({
   },
 
   navButtonDisabled: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: colors.border,
   },
 
   navButtonText: {
-    color: "black",
+    color: colors.textPrimary,
     fontSize: 15,
     fontWeight: "600",
   },
 
   navButtonTextDisabled: {
-    color: "#999",
+    color: colors.textTertiary,
   },
 });
 

@@ -8,7 +8,6 @@ import {
   Dimensions,
   Modal,
   Pressable,
-  Animated,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
@@ -22,6 +21,8 @@ import {
   getEffectiveUser,
 } from "../services/apiClient";
 import FavoriteHours from "./favoriteHours";
+import { colors, typography, spacing, radius, elevation } from "./GlobalStyles/theme";
+import { displayActuatorName, actuatorIcon } from "../services/actuatorLabels";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -29,9 +30,9 @@ const screenWidth = Dimensions.get("window").width;
 const SensorIcon = ({ type }) => {
   switch (type) {
     case "temperature":
-      return <MaterialCommunityIcons name="thermometer" size={18} color="#333" />;
+      return <MaterialCommunityIcons name="thermometer" size={18} color={colors.primary} />;
     case "humidity":
-      return <MaterialCommunityIcons name="water-percent" size={18} color="#333" />;
+      return <MaterialCommunityIcons name="water-percent" size={18} color={colors.primary} />;
     case "soil":
     case "soil_moisture":
       return <Image source={SoilIcon} style={{ width: 18, height: 18 }} />;
@@ -64,29 +65,8 @@ const getDefaultUnit = (type) => {
 };
 
 
-// --- Custom Switch ---
-const CustomSwitch = ({ value, onValueChange }) => {
-  const offsetX = useRef(new Animated.Value(value ? 20 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(offsetX, {
-      toValue: value ? 20 : 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  }, [value]);
-
-  return (
-    <Pressable onPress={() => onValueChange(!value)}>
-      <View style={[styles.track, value && styles.trackOn]}>
-        <Animated.View style={[styles.thumb, { left: offsetX }]} />
-      </View>
-    </Pressable>
-  );
-};
-
 // --- ActuatorSwitch cu polling ---
-const ActuatorSwitch = ({ label, actuatorId }) => {
+const ActuatorSwitch = ({ label, actuatorId, iconName = "power" }) => {
   const [isOn, setIsOn] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -208,20 +188,39 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   };
 
   return (
-    <View style={{ alignItems: "center", marginHorizontal: 2 }}>
-      <CustomSwitch value={isOn} onValueChange={handleToggle} />
-      <Text style={{ fontSize: 11, marginTop: 2, textAlign: "center" }}>{label}</Text>
-      {timeLeft !== null && (
-        <View style={{ alignItems: "center", marginTop: 2 }}>
-          <Text style={{ fontSize: 10, color: "#555", textAlign: "center" }}>Oprire automată</Text>
-          <Text style={{ fontSize: 10, color: "#555", textAlign: "center" }}>{formatTime(timeLeft)}</Text>
+    <View style={styles.actuatorTile}>
+      <Pressable
+        style={[styles.actuatorBtn, isOn && styles.actuatorBtnOn]}
+        onPress={handleToggle}
+      >
+        <MaterialCommunityIcons
+          name={iconName}
+          size={24}
+          color={isOn ? colors.textOnAccent : colors.primary}
+        />
+        <View style={styles.actuatorBtnTextWrap}>
+          <Text style={[styles.actuatorBtnLabel, isOn && styles.actuatorBtnLabelOn]} numberOfLines={1}>
+            {label}
+          </Text>
+          {isOn ? (
+            <Text style={styles.actuatorBtnState}>
+              {timeLeft !== null ? `Oprire în ${formatTime(timeLeft)}` : "Pornit"}
+            </Text>
+          ) : (
+            <Text style={styles.actuatorBtnStateOff}>Apasă pentru pornire</Text>
+          )}
         </View>
-      )}
+        <MaterialCommunityIcons
+          name={isOn ? "stop-circle" : "play-circle"}
+          size={28}
+          color={isOn ? colors.textOnAccent : colors.primary}
+        />
+      </Pressable>
 
-      <Modal visible={modalVisible} transparent>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <View style={{ backgroundColor: "#AFD6B1", padding: 20, borderRadius: 10, width: 280, alignItems: "center" }}>
-            <Text style={{ fontWeight: "bold", marginBottom: 10 }}>Setează timer pentru {label}</Text>
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Setează timer pentru {label}</Text>
             <Slider
               style={{ width: 220, height: 40 }}
               minimumValue={5}
@@ -229,21 +228,21 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
               step={1}
               value={selectedMinutes}
               onValueChange={setSelectedMinutes}
-              minimumTrackTintColor="#fff"
-              maximumTrackTintColor="#aaa"
-              thumbTintColor="#fff"
+              minimumTrackTintColor={colors.accent}
+              maximumTrackTintColor={colors.track}
+              thumbTintColor={colors.primary}
             />
-            <Text style={{ marginVertical: 10 }}>
+            <Text style={styles.modalValue}>
               {selectedMinutes < 60
                 ? `${selectedMinutes} minute`
                 : `${Math.floor(selectedMinutes / 60)}h ${selectedMinutes % 60}m`}
             </Text>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", marginTop: 10 }}>
-              <Pressable style={{ flex: 1, marginHorizontal: 5, paddingVertical: 8, backgroundColor: "#fff", borderRadius: 6, alignItems: "center" }} onPress={handleStart}>
-                <Text style={{ fontWeight: "bold" }}>Pornește</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", marginTop: spacing.sm }}>
+              <Pressable style={[styles.modalBtn, styles.modalBtnPrimary]} onPress={handleStart}>
+                <Text style={styles.modalBtnPrimaryText}>Pornește</Text>
               </Pressable>
-              <Pressable style={{ flex: 1, marginHorizontal: 5, paddingVertical: 8, backgroundColor: "#fff", borderRadius: 6, alignItems: "center" }} onPress={() => setModalVisible(false)}>
-                <Text style={{ fontWeight: "bold" }}>Anulează</Text>
+              <Pressable style={[styles.modalBtn, styles.modalBtnGhost]} onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalBtnGhostText}>Anulează</Text>
               </Pressable>
             </View>
           </View>
@@ -323,9 +322,10 @@ const GreenhouseCard = ({ greenhouse, sensors: sensorsProp, onPress }) => {
             {sensors.map(s => (
               <View key={s.id} style={styles.sensorBadge}>
                 <SensorIcon type={s.type} />
-                <Text style={styles.sensorText}>
-                  {s.value}{s.unit} {s.timestamp ? `(${formatReadingTime(s.timestamp)})` : ""}
-                </Text>
+                <Text style={styles.sensorText}>{s.value}{s.unit}</Text>
+                {s.timestamp ? (
+                  <Text style={styles.sensorTime}>{formatReadingTime(s.timestamp)}</Text>
+                ) : null}
               </View>
             ))}
           </View>
@@ -339,7 +339,8 @@ const GreenhouseCard = ({ greenhouse, sensors: sensorsProp, onPress }) => {
             actuators.map(actuator => (
               <ActuatorSwitch
                 key={actuator.id}
-                label={actuator.name}
+                label={displayActuatorName(actuator.name)}
+                iconName={actuatorIcon(actuator.name)}
                 actuatorId={actuator.id}
               />
             ))
@@ -356,28 +357,23 @@ const GreenhouseCard = ({ greenhouse, sensors: sensorsProp, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    backgroundColor: "#AFD6B1",
-    borderRadius: 10,
+    backgroundColor: colors.surface,
+    borderRadius: radius.card,
     overflow: "hidden",
     width: screenWidth > 420 ? 385 : "95%",
-    // marginVertical: 8, // 👈 REMOVE THIS LINE
-    marginBottom: 16,     // 👈 ADD THIS LINE
-    marginHorizontal: 8,
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
+    marginBottom: spacing.md,
+    marginHorizontal: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...elevation.card,
   },
   image: {
     width: screenWidth > 420 ? 120 : 90,
     alignSelf: "stretch",
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
   },
   info: {
     flex: 1,
-    padding: 8,
+    padding: spacing.sm,
     justifyContent: "flex-start",
   },
   header: {
@@ -385,15 +381,74 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  title: { fontSize: screenWidth > 420 ? 18 : 16, fontWeight: "bold", color: "#333" },
-  location: { fontSize: screenWidth > 420 ? 12 : 10, color: "#666" },
-  sensorBadge: { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(255,255,255,0.3)", paddingHorizontal: 4, paddingVertical: 2, borderRadius: 4, marginRight: 4, marginBottom: 4, minWidth: 50, justifyContent: "center" },
-  sensorText: { marginLeft: 4, fontSize: 10, color: "#333" },
-  actuatorRow: { flexDirection: "row", justifyContent: "space-around", marginTop: 12 },
-  track: { width: 40, height: 20, borderRadius: 10, backgroundColor: "#ccc", justifyContent: "center" },
-  trackOn: { backgroundColor: "#34C759" },
-  thumb: { width: 18, height: 18, borderRadius: 9, backgroundColor: "#fff", position: "absolute", top: 1 },
-  noActuatorText: { fontSize: 12, color: "#555", textAlign: "center", flex: 1 },
+  title: { ...typography.heading, fontSize: screenWidth > 420 ? 20 : 17, color: colors.primary },
+  location: { ...typography.caption, color: colors.textSecondary },
+  sensorBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: spacing.xxs,
+    borderRadius: radius.chip,
+    marginRight: spacing.xxs,
+    marginBottom: spacing.xxs,
+    minWidth: 50,
+    justifyContent: "center",
+  },
+  sensorText: { ...typography.metricSmall, marginLeft: spacing.xxs, color: colors.textPrimary },
+  sensorTime: { ...typography.unit, color: colors.textTertiary, marginLeft: spacing.xxs },
+  actuatorRow: { flexDirection: "column", gap: spacing.xs, marginTop: spacing.sm },
+  noActuatorText: { ...typography.caption, color: colors.textSecondary, textAlign: "center", flex: 1 },
+
+  // Buton manual mare
+  actuatorTile: { width: "100%" },
+  actuatorBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    minHeight: 56,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: colors.surfaceMuted,
+  },
+  actuatorBtnOn: { backgroundColor: colors.accent, borderColor: colors.accent },
+  actuatorBtnTextWrap: { flex: 1, marginHorizontal: spacing.sm },
+  actuatorBtnLabel: { ...typography.subtitle, color: colors.textPrimary },
+  actuatorBtnLabelOn: { color: colors.textOnAccent },
+  actuatorBtnState: { ...typography.metricSmall, color: colors.textOnAccent },
+  actuatorBtnStateOff: { ...typography.caption, color: colors.textSecondary },
+
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(30,70,50,0.45)",
+  },
+  modalCard: {
+    backgroundColor: colors.surface,
+    padding: spacing.lg,
+    borderRadius: radius.card,
+    width: 280,
+    alignItems: "center",
+    ...elevation.raised,
+  },
+  modalTitle: { ...typography.subtitle, color: colors.textPrimary, marginBottom: spacing.sm, textAlign: "center" },
+  modalValue: { ...typography.metricSmall, color: colors.primary, marginVertical: spacing.sm },
+  modalBtn: {
+    flex: 1,
+    marginHorizontal: spacing.xxs,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.sm,
+    alignItems: "center",
+  },
+  modalBtnPrimary: { backgroundColor: colors.primary },
+  modalBtnPrimaryText: { ...typography.bodyStrong, color: colors.textOnDark },
+  modalBtnGhost: { backgroundColor: colors.surfaceMuted, borderWidth: 1, borderColor: colors.border },
+  modalBtnGhostText: { ...typography.bodyStrong, color: colors.textPrimary },
 });
 
 export default GreenhouseCard;

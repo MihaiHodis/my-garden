@@ -7,15 +7,17 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Platform,
+  Pressable,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   getGreenhouses,
   getSensorsByGreenhouse,
   getActuatorsByGreenhouse,
 } from "../services/apiClient";
 import { useNavigation } from "@react-navigation/native";
+import { colors, typography, spacing, radius, elevation } from "../components/GlobalStyles/theme";
+import { displayActuatorName } from "../services/actuatorLabels";
 
 const SensorsScreen = () => {
   const [sere, setSere] = useState([]);
@@ -147,19 +149,28 @@ const renderBox = (item) => {
   // The logic now uses the original English status (handles both ok/error and functional/unfunctional)
   const isDefect = Stare.toLowerCase() === "unfunctional" || Stare.toLowerCase() === "error";
 
+  const displayName = item.component_type === "Actuator"
+    ? displayActuatorName(item.name)
+    : (item.name || "");
+
   return (
-    <View key={item.id} style={styles.box}>
-      <Text style={styles.boxTitle}>
-        {item.component_type}: {item.name || ""}
-      </Text>
+    <View key={item.id} style={[styles.box, isDefect && styles.boxDefect]}>
+      <View style={styles.boxHeader}>
+        <Text style={styles.boxEyebrow}>{item.component_type}</Text>
+        <View style={[styles.statusBadge, isDefect ? styles.statusBadgeBad : styles.statusBadgeGood]}>
+          <Text style={[styles.statusBadgeText, isDefect ? styles.statusBadgeTextBad : styles.statusBadgeTextGood]}>
+            {translatedStare}
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.boxTitle}>{displayName}</Text>
       <Text style={styles.boxText}>Serie: {serie}</Text>
-      {/* Use the translated status for display */}
-      <Text style={styles.boxText}>Stare: {translatedStare}</Text>
 
       {isDefect && (
         <TouchableOpacity onPress={() => handleStareClick(item, selectedSeraObject)} style={styles.alert}>
+          <MaterialCommunityIcons name="alert-circle-outline" size={16} color={colors.error} />
           <Text style={styles.alertText}>
-            ⚠ {item.component_type} defect! Află mai multe
+            {item.component_type} defect — află mai multe
           </Text>
         </TouchableOpacity>
       )}
@@ -174,26 +185,38 @@ const renderBox = (item) => {
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Selectează o seră:</Text>
+        <Text style={styles.title}>Selectează o seră</Text>
 
-        <View style={styles.dropdownContainer}>
-          <Picker
-            selectedValue={selectedSera}
-            onValueChange={(value) => setSelectedSera(value)}
-            style={[styles.dropdown, Platform.OS === "ios" && styles.iosPicker]}
-            itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-          >
-            <Picker.Item label="Selectează..." value="" />
-            {sere.map((sera) => (
-              <Picker.Item key={sera.id} label={sera.name} value={sera.id} />
-            ))}
-          </Picker>
-        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipRow}
+        >
+          {sere.map((sera) => {
+            const sel = sera.id === selectedSera;
+            return (
+              <Pressable
+                key={sera.id}
+                style={[styles.seraChip, sel && styles.seraChipSel]}
+                onPress={() => setSelectedSera(sera.id)}
+              >
+                <MaterialCommunityIcons
+                  name="greenhouse"
+                  size={16}
+                  color={sel ? colors.textOnAccent : colors.primary}
+                />
+                <Text style={[styles.seraChipText, sel && styles.seraChipTextSel]}>
+                  {sera.name}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
 
         {loading ? (
           <ActivityIndicator
             size="large"
-            color="#555"
+            color={colors.primaryMuted}
             style={{ marginTop: 20 }}
           />
         ) : selectedSera ? (
@@ -222,82 +245,92 @@ const renderBox = (item) => {
   );
 };
 
-// ... styles remain the same
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    padding: spacing.md,
+    backgroundColor: colors.background,
     flexGrow: 1,
     paddingBottom: 150,
   },
   title: {
-    fontSize: 18,
-    marginBottom: 10,
-    fontWeight: "bold",
+    ...typography.subtitle,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
   },
-  dropdownContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    backgroundColor: "#fff",
-    marginBottom: 15,
-    ...Platform.select({
-      ios: {
-        height: 50,
-        justifyContent: "center",
-      },
-    }),
+  chipRow: {
+    gap: spacing.xs,
+    paddingBottom: spacing.md,
+    paddingRight: spacing.md,
   },
-  dropdown: {
-    height: 50,
-    width: "100%",
+  seraChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xxs,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    minHeight: 40,
   },
-  iosPicker: {
-    height: 50,
-    marginHorizontal: 0,
-  },
-  iosPickerItem: {
-    height: 50,
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "normal",
-  },
+  seraChipSel: { backgroundColor: colors.accent, borderColor: colors.accent },
+  seraChipText: { ...typography.bodyStrong, color: colors.textPrimary },
+  seraChipTextSel: { color: colors.textOnAccent },
+
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginVertical: 10,
+    ...typography.eyebrow,
+    color: colors.accentText,
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
   },
   box: {
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: colors.surface,
+    padding: spacing.sm,
+    borderRadius: radius.card,
+    marginBottom: spacing.sm,
     borderWidth: 1,
-    borderColor: "#ddd",
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    borderColor: colors.border,
+    ...elevation.card,
   },
+  boxDefect: { borderColor: colors.error },
+  boxHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: spacing.xxs,
+  },
+  boxEyebrow: { ...typography.eyebrow, color: colors.textSecondary },
+  statusBadge: {
+    paddingHorizontal: spacing.xs,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+  },
+  statusBadgeGood: { backgroundColor: "rgba(74,122,82,0.14)" },
+  statusBadgeBad: { backgroundColor: "rgba(192,73,47,0.14)" },
+  statusBadgeText: { ...typography.unit },
+  statusBadgeTextGood: { color: colors.success },
+  statusBadgeTextBad: { color: colors.error },
   boxTitle: {
-    fontWeight: "bold",
-    fontSize: 15,
-    marginBottom: 4,
+    ...typography.heading,
+    fontSize: 17,
+    color: colors.primary,
+    marginBottom: spacing.xxs,
   },
-  boxText: {
-    fontSize: 14,
-  },
+  boxText: { ...typography.body, color: colors.textSecondary },
   alert: {
-    backgroundColor: "#ffcccc",
-    padding: 8,
-    marginTop: 8,
-    borderRadius: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xxs,
+    backgroundColor: "rgba(192,73,47,0.12)",
+    padding: spacing.xs,
+    marginTop: spacing.xs,
+    borderRadius: radius.sm,
   },
   alertText: {
-    color: "#990000",
-    fontWeight: "bold",
-    fontSize: 13,
+    ...typography.caption,
+    color: colors.error,
+    fontFamily: typography.bodyStrong.fontFamily,
   },
 });
 

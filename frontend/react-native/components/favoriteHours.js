@@ -6,11 +6,9 @@ import {
     Pressable,
     StyleSheet,
     TouchableOpacity,
-    Platform,
     ScrollView,
     Alert,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
     getActuatorsByGreenhouse,
@@ -19,6 +17,46 @@ import {
     deleteActuatorSchedule,
     getEffectiveUser,
 } from "../services/apiClient";
+import { colors, typography, spacing, radius, elevation } from "./GlobalStyles/theme";
+import { displayActuatorName } from "../services/actuatorLabels";
+
+const pad = (n) => String(n).padStart(2, "0");
+
+// ───── Selector de oră prietenos: butoane mari −/+ în loc de dropdown ─────
+const TimeStepper = ({ label, value, onChange }) => {
+    const [h, m] = value.split(":").map(Number);
+    const setHour = (nh) => onChange(`${pad((nh + 24) % 24)}:${pad(m)}`);
+    const setMin = (nm) => onChange(`${pad(h)}:${pad((nm + 60) % 60)}`);
+
+    const StepBtn = ({ icon, onPress }) => (
+        <TouchableOpacity style={styles.stepBtn} onPress={onPress} activeOpacity={0.7}>
+            <MaterialCommunityIcons name={icon} size={26} color={colors.primary} />
+        </TouchableOpacity>
+    );
+
+    return (
+        <View style={styles.stepperBlock}>
+            <Text style={styles.fieldLabel}>{label}</Text>
+            <View style={styles.stepperRow}>
+                <View style={styles.stepperGroup}>
+                    <StepBtn icon="chevron-up" onPress={() => setHour(h + 1)} />
+                    <Text style={styles.stepperValue}>{pad(h)}</Text>
+                    <Text style={styles.stepperUnit}>oră</Text>
+                    <StepBtn icon="chevron-down" onPress={() => setHour(h - 1)} />
+                </View>
+
+                <Text style={styles.colon}>:</Text>
+
+                <View style={styles.stepperGroup}>
+                    <StepBtn icon="chevron-up" onPress={() => setMin(m + 5)} />
+                    <Text style={styles.stepperValue}>{pad(m)}</Text>
+                    <Text style={styles.stepperUnit}>min</Text>
+                    <StepBtn icon="chevron-down" onPress={() => setMin(m - 5)} />
+                </View>
+            </View>
+        </View>
+    );
+};
 
 const FavoriteHours = ({ greenhouseId }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -56,20 +94,6 @@ const FavoriteHours = ({ greenhouseId }) => {
     };
 
     const getCurrentUserId = () => getEffectiveUser()?.uid;
-
-    // ───── Generare ore + minute din 5 în 5 minute ─────
-    const generateTimeOptions = () => {
-        const options = [];
-        for (let h = 0; h < 24; h++) {
-            for (let m = 0; m < 60; m += 5) {
-                const hourStr = h.toString().padStart(2, "0");
-                const minStr = m.toString().padStart(2, "0");
-                options.push(`${hourStr}:${minStr}`);
-            }
-        }
-        return options;
-    };
-    const timeOptions = generateTimeOptions();
 
     const handleSetFavorite = async () => {
         if (!selectedActuator) {
@@ -142,94 +166,88 @@ const FavoriteHours = ({ greenhouseId }) => {
     return (
         <View>
             <TouchableOpacity
-                style={styles.sensorBadge}
+                style={styles.triggerBtn}
                 onPress={() => setModalVisible(true)}
+                activeOpacity={0.8}
             >
-                <MaterialCommunityIcons name="clock-outline" size={18} color="#333" />
-                <Text style={styles.sensorText}>Automatizare actuatoare</Text>
+                <MaterialCommunityIcons name="water-sync" size={18} color={colors.primary} />
+                <Text style={styles.triggerText}>Programează irigare</Text>
+                <MaterialCommunityIcons name="chevron-right" size={18} color={colors.primary} />
             </TouchableOpacity>
 
             <Modal visible={modalVisible} transparent animationType="slide">
                 <View style={styles.modal}>
                     <View style={styles.modalBox}>
-                        <Text style={styles.title}>Automatizare actuatoare</Text>
-                        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-                            <Text>Alege actuatorul:</Text>
-                            <View style={styles.pickerContainer}>
-                                <Picker
-                                    selectedValue={selectedActuator}
-                                    onValueChange={(value) => setSelectedActuator(value)}
-                                    style={[styles.picker, Platform.OS === "ios" && styles.iosPicker]}
-                                    itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-                                >
-                                    <Picker.Item label="Selectează..." value={null} />
-                                    {actuators.map((a) => (
-                                        <Picker.Item key={a.id} label={a.name} value={a.id} />
-                                    ))}
-                                </Picker>
+                        <Text style={styles.eyebrow}>PROGRAMARE</Text>
+                        <Text style={styles.title}>Programează irigare</Text>
+
+                        <ScrollView contentContainerStyle={{ paddingBottom: spacing.md }} showsVerticalScrollIndicator={false}>
+                            {/* Selectare actuator — butoane mari */}
+                            <Text style={styles.fieldLabel}>Alege actuatorul</Text>
+                            <View style={styles.actuatorChips}>
+                                {actuators.length === 0 ? (
+                                    <Text style={styles.emptyText}>Nu sunt actuatoare definite.</Text>
+                                ) : (
+                                    actuators.map((a) => {
+                                        const sel = selectedActuator === a.id;
+                                        return (
+                                            <Pressable
+                                                key={a.id}
+                                                style={[styles.actuatorChip, sel && styles.actuatorChipSel]}
+                                                onPress={() => setSelectedActuator(a.id)}
+                                            >
+                                                {sel && (
+                                                    <MaterialCommunityIcons
+                                                        name="check"
+                                                        size={16}
+                                                        color={colors.textOnAccent}
+                                                        style={{ marginRight: spacing.xxs }}
+                                                    />
+                                                )}
+                                                <Text style={[styles.actuatorChipText, sel && styles.actuatorChipTextSel]}>
+                                                    {displayActuatorName(a.name)}
+                                                </Text>
+                                            </Pressable>
+                                        );
+                                    })
+                                )}
                             </View>
 
-                            <Text>Ora de pornire:</Text>
-                            <View style={styles.pickerContainer}>
-                                <Picker
-                                    selectedValue={startTime}
-                                    onValueChange={(value) => setStartTime(value)}
-                                    style={[styles.picker, Platform.OS === "ios" && styles.iosPicker]}
-                                    itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-                                >
-                                    {timeOptions.map((t) => (
-                                        <Picker.Item key={t} label={t} value={t} />
-                                    ))}
-                                </Picker>
-                            </View>
-
-                            <Text>Ora de oprire:</Text>
-                            <View style={styles.pickerContainer}>
-                                <Picker
-                                    selectedValue={endTime}
-                                    onValueChange={(value) => setEndTime(value)}
-                                    style={[styles.picker, Platform.OS === "ios" && styles.iosPicker]}
-                                    itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-                                >
-                                    {timeOptions.map((t) => (
-                                        <Picker.Item key={t} label={t} value={t} />
-                                    ))}
-                                </Picker>
+                            {/* Selectare ore — steppere mari */}
+                            <View style={styles.timeRow}>
+                                <TimeStepper label="Pornire" value={startTime} onChange={setStartTime} />
+                                <TimeStepper label="Oprire" value={endTime} onChange={setEndTime} />
                             </View>
 
                             <View style={styles.buttonRow}>
-                                <Pressable style={styles.button} onPress={handleSetFavorite}>
-                                    <Text style={styles.buttonText}>Setează</Text>
+                                <Pressable style={[styles.button, styles.buttonPrimary]} onPress={handleSetFavorite}>
+                                    <Text style={styles.buttonPrimaryText}>Setează</Text>
                                 </Pressable>
-                                <Pressable style={styles.button} onPress={() => setModalVisible(false)}>
-                                    <Text style={styles.buttonText}>Ieșire</Text>
+                                <Pressable style={[styles.button, styles.buttonGhost]} onPress={() => setModalVisible(false)}>
+                                    <Text style={styles.buttonGhostText}>Ieșire</Text>
                                 </Pressable>
                             </View>
 
-                            {/* Tabel programări */}
+                            {/* Lista programări */}
                             {schedules.length > 0 && (
                                 <View style={styles.scheduleTable}>
-                                    <View style={[styles.tableRow, styles.tableHeader]}>
-                                        <Text style={[styles.actuatorcell, styles.headerText]}>Actuator</Text>
-                                        <Text style={[styles.datacell, styles.headerText]}>Data</Text>
-                                        <Text style={[styles.oncell, styles.headerText]}>Pornire</Text>
-                                        <Text style={[styles.offcell, styles.headerText]}>Oprire</Text>
-                                        <Text style={[styles.deletecell, styles.headerText]}></Text>
-                                    </View>
-
+                                    <Text style={styles.fieldLabel}>Programări active</Text>
                                     {schedules.map((f) => (
-                                        <View key={f.id} style={styles.tableRow}>
-                                            <Text style={styles.cell}>
-                                                {actuators.find((a) => a.id === f.actuator_id)?.name || f.actuator_id}
+                                        <View key={f.id} style={styles.scheduleRow}>
+                                            <View style={{ flex: 1 }}>
+                                                <Text style={styles.scheduleName}>
+                                                    {displayActuatorName(actuators.find((a) => a.id === f.actuator_id)?.name) || f.actuator_id}
+                                                </Text>
+                                                <Text style={styles.scheduleMeta}>{formatDate(f.schedule_date)}</Text>
+                                            </View>
+                                            <Text style={styles.scheduleTime}>
+                                                {f.start_time.slice(0, 5)} → {f.end_time.slice(0, 5)}
                                             </Text>
-                                            <Text style={styles.cell}>{formatDate(f.schedule_date)}</Text>
-                                            <Text style={styles.cell}>{f.start_time.slice(0, 5)}</Text>
-                                            <Text style={styles.cell}>{f.end_time.slice(0, 5)}</Text>
                                             <TouchableOpacity
-                                                style={styles.deleteCell}
+                                                style={styles.deleteBtn}
                                                 onPress={() => handleDeleteFavorite(f.id)}
                                             >
-                                                <MaterialCommunityIcons name="close" size={20} color="red" />
+                                                <MaterialCommunityIcons name="close" size={18} color={colors.error} />
                                             </TouchableOpacity>
                                         </View>
                                     ))}
@@ -244,29 +262,105 @@ const FavoriteHours = ({ greenhouseId }) => {
 };
 
 const styles = StyleSheet.create({
-    modal: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" },
-    modalBox: { backgroundColor: "#AFD6B1", padding: 20, borderRadius: 10, width: 340 },
-    title: { fontWeight: "bold", marginBottom: 10, textAlign: "center" },
-    buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 },
-    button: { flex: 1, marginHorizontal: 5, padding: 10, backgroundColor: "#fff", borderRadius: 6, alignItems: "center" },
-    buttonText: { fontWeight: "bold" },
-    sensorBadge: { flexDirection: "row", alignItems: "center", backgroundColor: "rgba(255,255,255,0.3)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginRight: 4, marginBottom: 4 },
-    sensorText: { marginLeft: 4, fontSize: 14, color: "#333" },
-    pickerContainer: { borderWidth: 0, borderRadius: 4, backgroundColor: "#AFD6B1", marginBottom: 12, ...Platform.select({ ios: { height: 50, justifyContent: "center" } }) },
-    picker: { height: 50, width: "100%", color: "black" },
-    iosPicker: { height: 50, marginHorizontal: 0, color: "black" },
-    iosPickerItem: { height: 50, fontSize: 16, textAlign: "center", fontWeight: "normal", color: "black" },
-    scheduleTable: { marginTop: 15, paddingHorizontal: 5 },
-    tableRow: { flexDirection: "row", alignItems: "center", marginBottom: 6 },
-    tableHeader: { marginBottom: 4 },
-    cell: { flex: 1, textAlign: "center" },
-    headerText: { fontWeight: "bold" },
-    actuatorcell: { flex: 2, textAlign: "left", paddingHorizontal: 5 },
-    datacell: { flex: 1, textAlign: "left", marginLeft: -45 },
-    oncell: { flex: 1, textAlign: "left" },
-    offcell: { flex: 1, textAlign: "left", paddingLeft: 10 },
-    deletecell: { width: 15, alignItems: "flex-end" },
-    deleteCell: { width: 25, alignItems: "center" },
+    // Trigger button (în card)
+    triggerBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: colors.surfaceMuted,
+        borderWidth: 1.5,
+        borderColor: colors.primary,
+        paddingHorizontal: spacing.sm,
+        paddingVertical: spacing.xs,
+        borderRadius: radius.pill,
+        minHeight: 40,
+    },
+    triggerText: { ...typography.bodyStrong, marginHorizontal: spacing.xxs, color: colors.primary },
+
+    // Modal
+    modal: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(30,70,50,0.45)", padding: spacing.md },
+    modalBox: {
+        backgroundColor: colors.surface,
+        padding: spacing.lg,
+        borderRadius: radius.card,
+        width: "100%",
+        maxWidth: 380,
+        maxHeight: "85%",
+        ...elevation.raised,
+    },
+    eyebrow: { ...typography.eyebrow, color: colors.accentText, textAlign: "center" },
+    title: { ...typography.heading, color: colors.primary, textAlign: "center", marginBottom: spacing.md },
+
+    fieldLabel: { ...typography.bodyStrong, color: colors.textPrimary, marginBottom: spacing.xs, marginTop: spacing.xs },
+    emptyText: { ...typography.caption, color: colors.textSecondary },
+
+    // Chips actuator
+    actuatorChips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginBottom: spacing.sm },
+    actuatorChip: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.md,
+        borderRadius: radius.pill,
+        borderWidth: 1.5,
+        borderColor: colors.border,
+        backgroundColor: colors.surfaceMuted,
+        minHeight: 44,
+    },
+    actuatorChipSel: { backgroundColor: colors.accent, borderColor: colors.accent },
+    actuatorChipText: { ...typography.bodyStrong, color: colors.textPrimary },
+    actuatorChipTextSel: { color: colors.textOnAccent },
+
+    // Steppere ore
+    timeRow: { flexDirection: "row", justifyContent: "space-between", gap: spacing.sm },
+    stepperBlock: { flex: 1, alignItems: "center", marginVertical: spacing.xs },
+    stepperRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: colors.surfaceMuted,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: radius.md,
+        paddingVertical: spacing.xs,
+        paddingHorizontal: spacing.xs,
+    },
+    stepperGroup: { alignItems: "center", justifyContent: "center" },
+    stepBtn: {
+        width: 44,
+        height: 40,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: radius.sm,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        marginVertical: spacing.xxs,
+    },
+    stepperValue: { ...typography.metric, fontSize: 26, color: colors.textPrimary, marginVertical: spacing.xxs },
+    stepperUnit: { ...typography.unit, color: colors.textTertiary },
+    colon: { ...typography.metric, fontSize: 26, color: colors.textTertiary, marginHorizontal: spacing.xs },
+
+    // Butoane
+    buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: spacing.md, gap: spacing.xs },
+    button: { flex: 1, paddingVertical: spacing.md, borderRadius: radius.sm, alignItems: "center", minHeight: 48, justifyContent: "center" },
+    buttonPrimary: { backgroundColor: colors.primary },
+    buttonPrimaryText: { ...typography.subtitle, color: colors.textOnDark },
+    buttonGhost: { backgroundColor: colors.surfaceMuted, borderWidth: 1, borderColor: colors.border },
+    buttonGhostText: { ...typography.subtitle, color: colors.textPrimary },
+
+    // Lista programări
+    scheduleTable: { marginTop: spacing.md, borderTopWidth: 1, borderTopColor: colors.divider, paddingTop: spacing.xs },
+    scheduleRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: spacing.sm,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.divider,
+    },
+    scheduleName: { ...typography.bodyStrong, color: colors.textPrimary },
+    scheduleMeta: { ...typography.caption, color: colors.textSecondary },
+    scheduleTime: { ...typography.metricSmall, color: colors.primary, marginHorizontal: spacing.sm },
+    deleteBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center", borderRadius: radius.sm },
 });
 
 export default FavoriteHours;

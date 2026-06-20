@@ -10,6 +10,7 @@ import {
   settingsStyles,
   aboutStyles,
 } from "../../components/GlobalStyles/settingsStyles";
+import { colors } from "../../components/GlobalStyles/theme";
 
 // Import icons from assets/settings-icons directory (go up 2 directories)
 import {
@@ -74,13 +75,13 @@ const About = () => {
           activeOpacity={0.7}
         >
           <View style={aboutStyles.dropdownHeaderLeft}>
-            <CheckIcon size={20} style={{ color: "#4caf50" }} />
+            <CheckIcon size={20} style={{ color: colors.success }} />
             <Text style={aboutStyles.dropdownHeaderText}>{item.title}</Text>
           </View>
           <ChevronDownIcon
             size={20}
             isOpen={isExpanded}
-            style={{ color: "#666" }}
+            style={{ color: colors.textSecondary }}
           />
         </TouchableOpacity>
 
@@ -105,12 +106,12 @@ const About = () => {
           >
             {/* Back icon on the left */}
             <View style={aboutStyles.aboutBackIcon}>
-              <ChevronLeftIcon size={24} style={{ color: "black" }} />
+              <ChevronLeftIcon size={24} style={{ color: colors.textPrimary }} />
             </View>
 
             {/* Centered content */}
             <View style={settingsStyles.headerContent}>
-              <Text style={settingsStyles.headerTitle}>ByteStorm App</Text>
+              <Text style={settingsStyles.headerTitle}>mygarden</Text>
               <Text style={settingsStyles.headerSubtitle}>
                 Aplicația ta de management și automatizare
               </Text>
@@ -124,14 +125,14 @@ const About = () => {
           <View style={aboutStyles.aboutPaper}>
             <View style={settingsStyles.contentBox}>
               <View style={aboutStyles.sectionHeader}>
-                <InfoIcon size={24} style={{ color: "rgba(175, 214, 177, 1)" }} />
+                <InfoIcon size={24} style={{ color: colors.primary }} />
                 <Text style={aboutStyles.sectionHeaderText}>
                   Despre Aplicație
                 </Text>
               </View>
 
               <Text style={aboutStyles.descriptionText}>
-                ByteStorm App este o aplicație modernă construită pentru a
+                mygarden este o aplicație modernă construită pentru a
                 simplifica și automatiza procesele tale de lucru. Aplicația
                 oferă o interfață intuitivă și funcții avansate pentru a-ți
                 îmbunătății productivitatea.
@@ -149,7 +150,7 @@ const About = () => {
           <View style={aboutStyles.aboutPaper}>
             <View style={settingsStyles.contentBox}>
               <View style={aboutStyles.sectionHeader}>
-                <GuideIcon size={24} style={{ color: "rgba(175, 214, 177, 1)" }} />
+                <GuideIcon size={24} style={{ color: colors.primary }} />
                 <Text style={aboutStyles.sectionHeaderText}>
                   Cum se folosește
                 </Text>

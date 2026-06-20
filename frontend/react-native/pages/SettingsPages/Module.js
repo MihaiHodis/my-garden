@@ -6,6 +6,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { settingsStyles, moduleStyles } from "../../components/GlobalStyles/settingsStyles";
+import { colors } from "../../components/GlobalStyles/theme";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../assets/settings-icons/icons";
 import { LightIcon, PumpIcon, VentilationIcon, TemperatureIcon, HumidityIcon, SoilHumidityIcon } from "../../assets/settings-icons/moduleIcons";
 import ModuleDebugTutorial from "./ModuleDebugTutorial";
@@ -62,7 +63,7 @@ const Module = () => {
         <Text style={moduleStyles.categoryDescription}>{category.description}</Text>
       </View>
       <View style={moduleStyles.categoryArrow}>
-        <ChevronRightIcon size={20} style={{ color: "#cccccc" }} />
+        <ChevronRightIcon size={20} style={{ color: colors.textTertiary }} />
       </View>
     </TouchableOpacity>
   );
@@ -91,7 +92,7 @@ const Module = () => {
             activeOpacity={0.8}
           >
             <View style={settingsStyles.backIcon}>
-              <ChevronLeftIcon size={24} style={{ color: "black" }} />
+              <ChevronLeftIcon size={24} style={{ color: colors.textPrimary }} />
             </View>
             <View style={settingsStyles.headerContent}>
               <Text style={settingsStyles.headerTitle}>Module conectate</Text>

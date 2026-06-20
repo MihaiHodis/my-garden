@@ -1,10 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { getEffectiveUser, getUserById, syncUser } from '../services/apiClient';
+import { colors, typography, spacing, radius, elevation } from '../components/GlobalStyles/theme';
 
 const avatarMap = {
   'avatar_1.png': require('../assets/avatars/avatar_1.png'),
-// ... (rest of avatar map)
+  'avatar_2.png': require('../assets/avatars/avatar_2.png'),
+  'avatar_3.png': require('../assets/avatars/avatar_3.png'),
+  'avatar_4.png': require('../assets/avatars/avatar_4.png'),
+  'avatar_5.png': require('../assets/avatars/avatar_5.png'),
+  'avatar_6.png': require('../assets/avatars/avatar_6.png'),
+  'Den.jpg': require('../assets/avatars/Den.jpg'),
 };
 
 // Receive `onWelcomeFinish` as a prop
@@ -14,13 +21,15 @@ const WelcomeScreen = ({ onWelcomeFinish }) => {
 
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(30)).current;
+  // Signature: a thin chlorophyll-lime "growth line" that fills in on entry.
+  const growthAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
     const fetchUserData = async () => {
       // 🔹 Wait up to 3 seconds for Firebase to report the user
       let currentUser = getEffectiveUser();
       let attempts = 0;
-      
+
       while (!currentUser && attempts < 10) {
         await new Promise(resolve => setTimeout(resolve, 300));
         currentUser = getEffectiveUser();
@@ -30,11 +39,11 @@ const WelcomeScreen = ({ onWelcomeFinish }) => {
       if (currentUser) {
         try {
           console.log("WelcomeScreen: User found, starting sync for:", currentUser.email);
-          
+
           // 1. Sync user with DB (creates entry if missing)
           const syncResponse = await syncUser();
           console.log("WelcomeScreen: Sync successful", syncResponse.status);
-          
+
           // 2. Fetch the newly created/existing user data
           const response = await getUserById(currentUser.uid);
           setUserData(response.data);
@@ -67,6 +76,12 @@ const WelcomeScreen = ({ onWelcomeFinish }) => {
           duration: 800,
           useNativeDriver: true,
         }),
+        Animated.timing(growthAnim, {
+          toValue: 1,
+          duration: 1100,
+          delay: 300,
+          useNativeDriver: true,
+        }),
       ]).start();
 
       const timer = setTimeout(() => {
@@ -74,16 +89,21 @@ const WelcomeScreen = ({ onWelcomeFinish }) => {
         if (onWelcomeFinish) {
           onWelcomeFinish();
         }
-      }, 2500);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
-  }, [loading, onWelcomeFinish, fadeAnim, slideAnim]);
+  }, [loading, onWelcomeFinish, fadeAnim, slideAnim, growthAnim]);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={[colors.surfaceMuted, colors.background]}
+      start={{ x: 0.2, y: 0 }}
+      end={{ x: 0.8, y: 1 }}
+      style={styles.container}
+    >
       {loading ? (
-        <ActivityIndicator size="large" color="#AFD6B1" />
+        <ActivityIndicator size="large" color={colors.primaryMuted} />
       ) : (
         <Animated.View
           style={[
@@ -94,18 +114,31 @@ const WelcomeScreen = ({ onWelcomeFinish }) => {
             },
           ]}
         >
-          <Image source={require('../assets/logo.png')} style={styles.logo} />
+          <Image source={require('../assets/mygarden-logo.png')} style={styles.logo} />
+
+          <Text style={styles.eyebrow}>BINE AI REVENIT</Text>
           <Text style={styles.greetingText}>Salut,</Text>
+
           <View style={styles.userInfo}>
-            <Image 
-              source={avatarMap[userData?.avatar] || avatarMap['avatar_1.png']} 
-              style={styles.avatar} 
+            <Image
+              source={avatarMap[userData?.avatar] || avatarMap['avatar_1.png']}
+              style={styles.avatar}
             />
             <Text style={styles.nicknameText}>{userData?.nickname}</Text>
           </View>
+
+          {/* Signature: growth line that fills left-to-right */}
+          <View style={styles.growthTrack}>
+            <Animated.View
+              style={[
+                styles.growthFill,
+                { transform: [{ scaleX: growthAnim }] },
+              ]}
+            />
+          </View>
         </Animated.View>
       )}
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -114,42 +147,64 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "#f5f5f5",
   },
   contentContainer: {
     alignItems: 'center',
+    paddingHorizontal: spacing.lg,
   },
   logo: {
     width: 300,
     resizeMode: 'contain',
-    marginBottom: 0,
+    marginBottom: spacing.xs,
+  },
+  eyebrow: {
+    ...typography.eyebrow,
+    color: colors.accentText,
+    marginBottom: spacing.xs,
   },
   greetingText: {
-    fontSize: 34,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 20,
+    ...typography.hero,
+    color: colors.primary,
+    marginBottom: spacing.lg,
   },
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 50,
-    padding: 10,
-    paddingHorizontal: 20,
+    backgroundColor: colors.surface,
+    borderRadius: radius.pill,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...elevation.card,
   },
   avatar: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    marginRight: 15,
+    marginRight: spacing.md,
     borderWidth: 2,
-    borderColor: '#AFD6B1',
+    borderColor: colors.accent,
   },
   nicknameText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    ...typography.heading,
+    color: colors.textPrimary,
+  },
+  growthTrack: {
+    width: 120,
+    height: 3,
+    borderRadius: radius.pill,
+    backgroundColor: colors.track,
+    marginTop: spacing.lg,
+    overflow: 'hidden',
+  },
+  growthFill: {
+    width: '100%',
+    height: '100%',
+    borderRadius: radius.pill,
+    backgroundColor: colors.accent,
+    // grow from the left edge instead of the center
+    transformOrigin: 'left',
   },
 });
 

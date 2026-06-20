@@ -4,7 +4,7 @@ import { settingsStyles } from "../GlobalStyles/settingsStyles";
 export const Footer = () => (
   <View style={settingsStyles.footer}>
     <Text style={settingsStyles.footerText}>
-      © {new Date().getFullYear()} Bytestorm. Toate drepturile rezervate.
+      © {new Date().getFullYear()} mygarden. Toate drepturile rezervate.
     </Text>
   </View>
 );
