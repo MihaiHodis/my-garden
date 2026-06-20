@@ -3,9 +3,16 @@ import { View, Text, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { Svg, Line } from 'react-native-svg';
 
-import VictoryStackedBarChart from './VictoryStackedBarChart'; 
+import VictoryStackedBarChart from './VictoryStackedBarChart';
+import { colors, fonts } from './GlobalStyles/theme';
 
 const screenWidth = Dimensions.get('window').width;
+
+// Chart series colors — sensor (moss green), weather (soft sky), optimal band (lime).
+const SENSOR_RGB = '74,122,82';
+const WEATHER_RGB = '91,155,213';
+const OPTIMAL_RGB = '168,216,74';
+const INK_RGB = '44,42,36';
 
 const SensorChart = ({ chartDetails, onDrillDown }) => {
     const [tooltip, setTooltip] = useState(null);
@@ -104,14 +111,15 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
 
     if (type === 'line') {
         const chartConfig = {
-            backgroundColor: '#ffffff',
-            backgroundGradientFrom: '#ffffff',
-            backgroundGradientTo: '#ffffff',
+            backgroundColor: colors.surface,
+            backgroundGradientFrom: colors.surface,
+            backgroundGradientTo: colors.surface,
             decimalPlaces: 1,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            color: (opacity = 1) => `rgba(${INK_RGB}, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(${INK_RGB}, ${opacity})`,
             style: { borderRadius: 16 },
             propsForDots: { r: '5' },
+            propsForBackgroundLines: { stroke: 'rgba(30,70,50,0.08)' },
         };
 
         if (!dataPoints || dataPoints.length === 0) {
@@ -145,8 +153,8 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
         const data = {
             labels: getXLabels(),
             datasets: [
-                { data: outsideDataPoints || [], color: (opacity = 1) => `rgba(54, 162, 235, ${opacity})`, strokeWidth: 2 },
-                { data: dataPoints, color: (opacity = 1) => `rgba(175, 214, 177, ${opacity})`, strokeWidth: 2 },
+                { data: outsideDataPoints || [], color: (opacity = 1) => `rgba(${WEATHER_RGB}, ${opacity})`, strokeWidth: 2 },
+                { data: dataPoints, color: (opacity = 1) => `rgba(${SENSOR_RGB}, ${opacity})`, strokeWidth: 2 },
             ],
         };
 
@@ -155,9 +163,9 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
                 <Text style={styles.title}>{title}</Text>
                 
                 <View style={styles.legendContainer}>
-                    <View style={styles.legendItem}><View style={[styles.legendSymbol, { backgroundColor: 'rgba(175, 214, 177, 1)', borderRadius: 5 }]} /><Text style={styles.legendText}>{`Senzor (${sensorUnit})`}</Text></View>
-                    <View style={styles.legendItem}><View style={[styles.legendSymbol, { backgroundColor: 'rgba(54, 162, 235, 1)', borderRadius: 5 }]} /><Text style={styles.legendText}>{`Vreme (${sensorUnit})`}</Text></View>
-                    <View style={styles.legendItem}><View style={[styles.legendSymbol, { borderWidth: 1, borderColor: 'rgba(255, 204, 0, 0.9)' }]} /><Text style={styles.legendText}>Optim</Text></View>
+                    <View style={styles.legendItem}><View style={[styles.legendSymbol, { backgroundColor: `rgba(${SENSOR_RGB}, 1)`, borderRadius: 5 }]} /><Text style={styles.legendText}>{`Senzor (${sensorUnit})`}</Text></View>
+                    <View style={styles.legendItem}><View style={[styles.legendSymbol, { backgroundColor: `rgba(${WEATHER_RGB}, 1)`, borderRadius: 5 }]} /><Text style={styles.legendText}>{`Vreme (${sensorUnit})`}</Text></View>
+                    <View style={styles.legendItem}><View style={[styles.legendSymbol, { borderWidth: 1, borderColor: `rgba(${OPTIMAL_RGB}, 1)` }]} /><Text style={styles.legendText}>Optim</Text></View>
                 </View>
 
                 <View>
@@ -182,7 +190,7 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
                                 <View style={{ flex: 1 }}>
                                     {(minLineTop > maxLineTop) && (
                                         <>
-                                            <View style={{ position: 'absolute', left: chartPaddingLeft, top: maxLineTop, width: plotWidth, height: minLineTop - maxLineTop, backgroundColor: 'rgba(255, 204, 0, 0.15)' }} />
+                                            <View style={{ position: 'absolute', left: chartPaddingLeft, top: maxLineTop, width: plotWidth, height: minLineTop - maxLineTop, backgroundColor: `rgba(${OPTIMAL_RGB}, 0.18)` }} />
                                             <View style={[styles.optimalLine, { top: maxLineTop, left: chartPaddingLeft, width: plotWidth }]} />
                                             <View style={[styles.optimalLine, { top: minLineTop, left: chartPaddingLeft, width: plotWidth }]} />
                                         </>
@@ -190,7 +198,7 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
 
                                     {tooltip && (
                                         <Svg height="250" width={chartWidth} style={{ position: 'absolute', top: 0, left: 0 }}>
-                                            <Line x1={tooltip.x} y1="0" x2={tooltip.x} y2="204" stroke="grey" strokeWidth="1" strokeDasharray="3, 3" />
+                                            <Line x1={tooltip.x} y1="0" x2={tooltip.x} y2="204" stroke={colors.textTertiary} strokeWidth="1" strokeDasharray="3, 3" />
                                         </Svg>
                                     )}
                                 </View>
@@ -204,12 +212,12 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
                     <View style={[styles.tooltipContainer, { left: tooltip.x > screenWidth / 2 ? tooltip.x - 130 : tooltip.x + 10, top: 20 }]}>
                         <Text style={styles.tooltipLabel}>{tooltip.label}</Text>
                         <View style={styles.tooltipValueContainer}>
-                            <View style={[styles.tooltipColorBox, { backgroundColor: 'rgba(175, 214, 177, 1)' }]} />
+                            <View style={[styles.tooltipColorBox, { backgroundColor: `rgba(${SENSOR_RGB}, 1)` }]} />
                             <Text style={styles.tooltipValue}>{tooltip.value}{sensorUnit}</Text>
                         </View>
                         {tooltip.outsideValue && (
                             <View style={styles.tooltipValueContainer}>
-                                <View style={[styles.tooltipColorBox, { backgroundColor: 'rgba(54, 162, 235, 1)' }]} />
+                                <View style={[styles.tooltipColorBox, { backgroundColor: `rgba(${WEATHER_RGB}, 1)` }]} />
                                 <Text style={styles.tooltipValue}>{tooltip.outsideValue}{sensorUnit}</Text>
                             </View>
                         )}
@@ -224,9 +232,9 @@ const SensorChart = ({ chartDetails, onDrillDown }) => {
 
 const styles = StyleSheet.create({
     container: { alignItems: 'center', position: 'relative' },
-    title: { fontSize: 16, fontWeight: '500', marginBottom: 4 },
-    hintText: { fontSize: 12, color: '#666', marginBottom: 8 },
-    drillDownHint: { fontSize: 12, color: '#666', marginBottom: 8 },
+    title: { fontFamily: fonts.display, fontSize: 17, color: colors.primary, marginBottom: 4 },
+    hintText: { fontSize: 12, color: colors.textSecondary, marginBottom: 8 },
+    drillDownHint: { fontSize: 12, color: colors.textSecondary, marginBottom: 8 },
     chartStyle: { marginVertical: 8 },
     gestureCaptureView: {
         position: 'absolute',
@@ -239,21 +247,21 @@ const styles = StyleSheet.create({
         position: 'absolute',
         height: 1,
         borderWidth: 1,
-        borderColor: 'rgba(255, 204, 0, 0.7)',
+        borderColor: `rgba(${OPTIMAL_RGB}, 0.9)`,
         borderStyle: 'dashed',
     },
     tooltipContainer: {
         position: 'absolute',
         zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        borderRadius: 6,
+        backgroundColor: 'rgba(30,70,50,0.92)',
+        borderRadius: 10,
         padding: 8,
         width: 120,
     },
     tooltipLabel: {
-        color: 'white',
+        color: colors.textOnDark,
+        fontFamily: fonts.bodyBold,
         fontSize: 14,
-        fontWeight: 'bold',
         marginBottom: 5,
     },
     tooltipValueContainer: {
@@ -268,7 +276,8 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
     tooltipValue: {
-        color: 'white',
+        color: colors.textOnDark,
+        fontFamily: fonts.mono,
         fontSize: 12,
     },
     legendContainer: {
@@ -292,24 +301,25 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
     legendText: {
+        fontFamily: fonts.body,
         fontSize: 12,
-        color: '#333',
+        color: colors.textSecondary,
     },
     barLabel: {
         textAlign: 'center',
-        color: 'white',
+        color: colors.textOnDark,
         fontSize: 12,
         fontWeight: 'bold',
     },
     chartCard: {
         marginTop: 7,
         width: '100%',
-        backgroundColor: '#ffffff',
+        backgroundColor: colors.surface,
         borderRadius: 16,
         paddingTop: 16,
         paddingBottom: 8,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: colors.border,
         overflow: 'hidden',
     },
 });

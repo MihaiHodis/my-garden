@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import { settingsStyles, moduleStyles } from "../../components/GlobalStyles/settingsStyles";
+import { colors } from "../../components/GlobalStyles/theme";
 import { ChevronLeftIcon } from "../../assets/settings-icons/icons";
 import { CheckCircleIcon, AlertCircleIcon, InfoIcon, ToolsIcon } from "../../assets/settings-icons/moduleIcons";
 
@@ -51,7 +52,7 @@ const ModuleDebugTutorial = ({ category, onBack, faultyComponent, greenhouse }) 
 
   const getStepIcon = (type) => { switch (type) { case "check": return CheckCircleIcon; case "warning": return AlertCircleIcon; case "info": return InfoIcon; case "tools": return ToolsIcon; default: return InfoIcon; } };
   const getStepColor = (type) => { switch (type) { case "check": return "#4caf50"; case "warning": return "#ff9800"; case "info": return "#2196f3"; case "tools": return "#9c27b0"; default: return "#2196f3"; } };
-  const StepIndicator = ({ step, index, isActive }) => { const StepIcon = getStepIcon(step.type); const stepColor = getStepColor(step.type); return ( <View style={[moduleStyles.stepIndicator, isActive && moduleStyles.stepIndicatorActive]} > <View style={[ moduleStyles.stepIconContainer, { backgroundColor: isActive ? stepColor + "30" : "#f5f5f5", }, ]} > <StepIcon size={24} style={{ color: isActive ? stepColor : "#999", }} /> </View> <Text style={[ moduleStyles.stepNumber, isActive && moduleStyles.stepNumberActive, ]} > {index + 1} </Text> </View> ); };
+  const StepIndicator = ({ step, index, isActive }) => { const StepIcon = getStepIcon(step.type); const stepColor = getStepColor(step.type); return ( <View style={[moduleStyles.stepIndicator, isActive && moduleStyles.stepIndicatorActive]} > <View style={[ moduleStyles.stepIconContainer, { backgroundColor: isActive ? stepColor + "30" : colors.surfaceMuted, }, ]} > <StepIcon size={24} style={{ color: isActive ? stepColor : colors.textTertiary, }} /> </View> <Text style={[ moduleStyles.stepNumber, isActive && moduleStyles.stepNumberActive, ]} > {index + 1} </Text> </View> ); };
 
   return (
     <View style={settingsStyles.container}>
@@ -59,7 +60,7 @@ const ModuleDebugTutorial = ({ category, onBack, faultyComponent, greenhouse }) 
         <View style={settingsStyles.paper}>
           <TouchableOpacity style={settingsStyles.headerBox} onPress={onBack} activeOpacity={0.8}>
             <View style={settingsStyles.backIcon}>
-              <ChevronLeftIcon size={24} style={{ color: "black" }} />
+              <ChevronLeftIcon size={24} style={{ color: colors.textPrimary }} />
             </View>
             <View style={settingsStyles.headerContent}>
               <Text style={settingsStyles.headerTitle}>Depanare {category.name}</Text>

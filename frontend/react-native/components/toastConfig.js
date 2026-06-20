@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { CheckCircleIcon } from '../assets/settings-icons/moduleIcons';
+import { colors, typography, spacing, radius, elevation } from './GlobalStyles/theme';
 
 // The props from the library include 'isVisible'
 const ModalToast = ({ text1, text2, isVisible }) => {
@@ -30,7 +31,7 @@ const ModalToast = ({ text1, text2, isVisible }) => {
           */}
           <View style={styles.container}>
             <View style={styles.iconContainer}>
-              <CheckCircleIcon size={48} style={{ color: '#4caf50' }} />
+              <CheckCircleIcon size={48} style={{ color: colors.success }} />
             </View>
             <Text style={styles.title}>{text1}</Text>
             <Text style={styles.message}>{text2}</Text>
@@ -49,33 +50,34 @@ export const toastConfig = {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(30,70,50,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: spacing.md,
   },
   container: {
     width: '100%',
     maxWidth: 340,
-    padding: 24,
-    backgroundColor: 'white',
-    borderRadius: 16,
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
     alignItems: 'center',
-    elevation: 5,
+    ...elevation.raised,
   },
   iconContainer: {
-    marginBottom: 16,
+    marginBottom: spacing.md,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    ...typography.heading,
+    color: colors.primary,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: spacing.xs,
   },
   message: {
-    fontSize: 16,
-    color: '#666',
+    ...typography.body,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
 });

@@ -7,11 +7,10 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Pressable,
   ActivityIndicator,
   Dimensions,
-  Platform,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import {
   getGreenhouses,
   getSensorsByGreenhouse,
@@ -19,6 +18,7 @@ import {
   getOutsideWeatherByGreenhouse,
 } from "../services/apiClient.js";
 import SensorChart from "../components/SensorChart.native.js";
+import { colors, typography, spacing, radius, elevation } from "../components/GlobalStyles/theme";
 import {
   subHours,
   subDays,
@@ -374,7 +374,33 @@ const StatisticsScreen = () => {
       ? "30 zile"
       : previousTimeRange;
 
-  // --- JSX REMAINS THE SAME, NO CHANGES BELOW THIS LINE ---
+  // Selector reutilizabil sub formă de chips orizontale
+  const ChipRow = ({ items, selectedValue, onSelect, emptyText }) => {
+    if (!items || items.length === 0) {
+      return <Text style={styles.chipEmpty}>{emptyText}</Text>;
+    }
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.chipRow}
+      >
+        {items.map((it) => {
+          const sel = it.value === selectedValue;
+          return (
+            <Pressable
+              key={String(it.value)}
+              style={[styles.chip, sel && styles.chipSel]}
+              onPress={() => onSelect(it.value)}
+            >
+              <Text style={[styles.chipText, sel && styles.chipTextSel]}>{it.label}</Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    );
+  };
+
   return (
     <View style={styles.safeArea}>
       <View style={headerStyle.titleContainer}>
@@ -387,94 +413,51 @@ const StatisticsScreen = () => {
       >
         {!isDrillDown && (
           <View style={styles.filtersContainer}>
-            <View style={styles.row}>
-              <View style={styles.filterItem}>
-                <Text style={styles.label}>Seră</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker
-                    selectedValue={selectedGreenhouse}
-                    onValueChange={(itemValue) =>
-                      setSelectedGreenhouse(itemValue)
-                    }
-                    enabled={greenhouses.length > 0}
-                    style={[styles.picker, Platform.OS === "ios" && styles.iosPicker]}
-                    itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-                    mode="dropdown"
-                  >
-                    {greenhouses.map((g) => (
-                      <Picker.Item key={g.id} label={g.name} value={g.id} />
-                    ))}
-                  </Picker>
-                </View>
-              </View>
-              <View style={styles.filterItem}>
-                <Text style={styles.label}>Tip Senzor</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker
-                    selectedValue={selectedSensorType}
-                    onValueChange={(itemValue) =>
-                      handleSensorTypeChange(itemValue)
-                    }
-                    enabled={uniqueSensorTypes.length > 0}
-                    style={[styles.picker, Platform.OS === "ios" && styles.iosPicker]}
-                    itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-                    mode="dropdown"
-                  >
-                    {uniqueSensorTypes.map((type) => (
-                      <Picker.Item
-                        key={type}
-                        label={type
-                          .replace("_", " ")
-                          .replace(/\b\w/g, (l) => l.toUpperCase())}
-                        value={type}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-              </View>
-            </View>
+            <Text style={styles.label}>Seră</Text>
+            <ChipRow
+              items={greenhouses.map((g) => ({ label: g.name, value: g.id }))}
+              selectedValue={selectedGreenhouse}
+              onSelect={setSelectedGreenhouse}
+              emptyText="Nicio seră disponibilă"
+            />
 
-            <View style={styles.row}>
-              <View style={styles.filterItem}>
-                <Text style={styles.label}>Senzor Specific</Text>
-                <View style={styles.pickerContainer}>
-                  <Picker
-                    selectedValue={selectedSensorId}
-                    onValueChange={(itemValue) =>
-                      setSelectedSensorId(itemValue)
-                    }
-                    enabled={sensorsForDropdown.length > 0}
-                    style={[styles.picker, Platform.OS === "ios" && styles.iosPicker]}
-                    itemStyle={Platform.OS === "ios" && styles.iosPickerItem}
-                    mode="dropdown"
-                  >
-                    {sensorsForDropdown.map((s) => (
-                      <Picker.Item key={s.id} label={s.name} value={s.id} />
-                    ))}
-                  </Picker>
-                </View>
+            <Text style={styles.label}>Tip senzor</Text>
+            <ChipRow
+              items={uniqueSensorTypes.map((type) => ({
+                label: type.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+                value: type,
+              }))}
+              selectedValue={selectedSensorType}
+              onSelect={handleSensorTypeChange}
+              emptyText="Niciun tip de senzor"
+            />
+
+            <Text style={styles.label}>Senzor specific</Text>
+            <ChipRow
+              items={sensorsForDropdown.map((s) => ({ label: s.name, value: s.id }))}
+              selectedValue={selectedSensorId}
+              onSelect={setSelectedSensorId}
+              emptyText="Niciun senzor de acest tip"
+            />
+
+            <View style={styles.optimalRangeContainer}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Min optim</Text>
+                <TextInput
+                  style={styles.input}
+                  value={optimalValueMin}
+                  onChangeText={setOptimalValueMin}
+                  keyboardType="numeric"
+                />
               </View>
-              <View style={styles.filterItem}>
-                <View style={styles.optimalRangeContainer}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.label}>Min Optim</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={optimalValueMin}
-                      onChangeText={setOptimalValueMin}
-                      keyboardType="numeric"
-                    />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.label}>Max Optim</Text>
-                    <TextInput
-                      style={styles.input}
-                      value={optimalValueMax}
-                      onChangeText={setOptimalValueMax}
-                      keyboardType="numeric"
-                    />
-                  </View>
-                </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Max optim</Text>
+                <TextInput
+                  style={styles.input}
+                  value={optimalValueMax}
+                  onChangeText={setOptimalValueMax}
+                  keyboardType="numeric"
+                />
               </View>
             </View>
           </View>
@@ -543,7 +526,7 @@ const StatisticsScreen = () => {
 
         <View style={styles.chartContainer}>
           {loading ? (
-            <ActivityIndicator size="large" color="#007bff" />
+            <ActivityIndicator size="large" color={colors.primaryMuted} />
           ) : chartDetails ? (
             <SensorChart
               chartDetails={chartDetails}
@@ -580,7 +563,7 @@ const StatisticsScreen = () => {
           </View>
           <View style={styles.infoCard}>
             <Text style={styles.cardTitle}>În Parametrii</Text>
-            <Text style={[styles.cardValue, { color: "#2e7d32" }]}>
+            <Text style={[styles.cardValue, { color: colors.success }]}>
               {summaryStats.inRange}
             </Text>
           </View>
@@ -591,91 +574,66 @@ const StatisticsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#f5f5f5" },
-  container: { paddingHorizontal: 10 },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 16,
+  safeArea: { flex: 1, backgroundColor: colors.background },
+  container: { paddingHorizontal: spacing.sm },
+  filtersContainer: { marginBottom: spacing.sm },
+  label: { ...typography.bodyStrong, color: colors.textPrimary, marginBottom: spacing.xs, marginTop: spacing.sm },
+  chipRow: { gap: spacing.xs, paddingRight: spacing.md },
+  chip: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    minHeight: 40,
+    justifyContent: "center",
   },
-  filtersContainer: { marginBottom: 10 },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 12,
-    gap: 10,
-  },
-  filterItem: { flex: 1 },
-  label: { fontSize: 16, fontWeight: "bold", color: "#333", marginBottom: 4 },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    backgroundColor: "#fff",
-    marginBottom: 1,
-    ...Platform.select({
-      ios: {
-        height: 50,
-        justifyContent: "center",
-      },
-      android: {
-        height: 50,
-        justifyContent: "center",
-      }
-    }),
-  },
-  picker: {
-    width: "100%",
-  },
-  iosPicker: {
-    height: 50,
-    marginHorizontal: 0,
-  },
-  iosPickerItem: {
-    height: 50,
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "normal",
-  },
+  chipSel: { backgroundColor: colors.accent, borderColor: colors.accent },
+  chipText: { ...typography.bodyStrong, color: colors.textPrimary },
+  chipTextSel: { color: colors.textOnAccent },
+  chipEmpty: { ...typography.caption, color: colors.textTertiary, paddingVertical: spacing.xs },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
+    borderColor: colors.border,
+    borderRadius: radius.sm,
+    paddingHorizontal: spacing.xs,
+    ...typography.metricSmall,
     fontSize: 16,
-    backgroundColor: "#fff",
+    color: colors.textPrimary,
+    backgroundColor: colors.surface,
     height: 50,
   },
-  optimalRangeContainer: { flexDirection: "row", gap: 10 },
+  optimalRangeContainer: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.xs },
   timeButtonsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 16,
+    marginBottom: spacing.md,
+    gap: spacing.xs,
   },
   button: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginHorizontal: 5,
-    borderRadius: 17,
-    borderWidth: 1,
-    borderColor: "rgba(175, 214, 177, 1)",
-    backgroundColor: "#fff",
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: colors.surface,
+    minHeight: 40,
+    justifyContent: "center",
   },
   activeButton: {
-    backgroundColor: "rgba(175, 214, 177, 1)",
-    borderColor: "rgba(175, 214, 177, 1)",
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
   },
-  buttonText: { fontSize: 14, color: "#333" },
-  activeButtonText: { color: "black" },
+  buttonText: { ...typography.bodyStrong, color: colors.primary },
+  activeButtonText: { color: colors.textOnAccent },
   chartContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: spacing.lg,
     minHeight: 300,
     justifyContent: 'center'
   },
-  noDataText: { textAlign: "center", color: "#666" },
+  noDataText: { ...typography.body, textAlign: "center", color: colors.textSecondary },
   cardsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -684,20 +642,20 @@ const styles = StyleSheet.create({
   infoCard: {
     width: "48%",
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 10,
+    borderColor: colors.border,
+    borderRadius: radius.card,
+    padding: spacing.sm,
+    marginBottom: spacing.sm,
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
+    ...elevation.card,
   },
   cardTitle: {
-    fontSize: 14,
-    color: "#666",
-    fontWeight: "500",
-    marginBottom: 4,
+    ...typography.eyebrow,
+    color: colors.textSecondary,
+    marginBottom: spacing.xxs,
   },
-  cardValue: { fontSize: 18, fontWeight: "600" },
+  cardValue: { ...typography.metric, fontSize: 22, color: colors.textPrimary },
 });
 
 export default StatisticsScreen;

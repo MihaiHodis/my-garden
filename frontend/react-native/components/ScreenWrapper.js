@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets, // 👈 Make sure this is imported
@@ -7,6 +7,7 @@ import {
 import BottomNavBar from "./BottomNavBar";
 import { useFonts, Gugi_400Regular } from "@expo-google-fonts/gugi";
 import { LinearGradient } from "expo-linear-gradient";
+import { colors } from "./GlobalStyles/theme";
 
 const ScreenWrapper = ({ children }) => {
   const [fontsLoaded] = useFonts({ Gugi_400Regular });
@@ -20,7 +21,7 @@ const ScreenWrapper = ({ children }) => {
       <View
         style={[
           styles.topBarBackground,
-          { height: insets.top, backgroundColor: "#fff" },
+          { height: insets.top, backgroundColor: colors.surface },
         ]}
       />
 
@@ -30,13 +31,9 @@ const ScreenWrapper = ({ children }) => {
       {/* Navigation Bar Section */}
       <View style={[styles.navBarWrapper, { paddingBottom: insets.bottom }]}>
         <LinearGradient
-          // Gradient for the "rounded 3D" highlight effect
-          colors={[
-          "rgba(211, 233, 212, 1)", // Bright highlight at the very top
-          "rgba(175, 214, 177, 1)", // Your main color
-          /*"rgba(143, 175, 145, 1)", // A slightly darker shade for volume*/
-          ]}
-          locations={[/*0, */0, 0.3]} // Controls the position of each color
+          // Soft light gradient for a subtle "raised" navbar
+          colors={[colors.surface, colors.surfaceMuted]}
+          locations={[0, 1]}
           style={styles.gradient}
           >
           <BottomNavBar />
@@ -49,7 +46,7 @@ const ScreenWrapper = ({ children }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5", // This stays grey for the corners
+    backgroundColor: colors.background, // misted-glass tint for the corners
   },
   // 👇 ADD THIS STYLE OBJECT FOR THE TOP BAR
   topBarBackground: {
@@ -63,21 +60,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navBarWrapper: {
-    backgroundColor: "rgba(175, 214, 177, 1)",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    shadowColor: "#000",
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    borderTopWidth: 1,
+    borderColor: colors.border,
+    shadowColor: colors.canopy,
     shadowOffset: {
       width: 0,
       height: -6,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 15,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 12,
   },
   gradient: {
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
   },
 });
 

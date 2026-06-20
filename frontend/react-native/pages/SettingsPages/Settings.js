@@ -5,6 +5,7 @@ import { Footer } from "../../components/Footer/Footer";
 import headerStyle from "../../components/GlobalStyles/headerStyle";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { settingsUIStyles } from "../../components/GlobalStyles/settingsStyles";
+import { colors } from "../../components/GlobalStyles/theme";
 import {
   PersonIcon,
   InfoIcon,
@@ -81,7 +82,7 @@ const Settings = () => {
           <Text style={[settingsUIStyles.primaryText, isLogout && settingsUIStyles.logoutText]}>{title}</Text>
           <Text style={settingsUIStyles.secondaryText}>{subtitle}</Text>
         </View>
-        <View style={{ marginLeft: 8 }}><ChevronRightIcon style={{ color: isLogout ? "#ffcdd2" : "#cccccc" }} size={20} /></View>
+        <View style={{ marginLeft: 8 }}><ChevronRightIcon style={{ color: isLogout ? colors.error : colors.textTertiary }} size={20} /></View>
       </TouchableOpacity>
     );
   };

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getRealtimeWeather } from "../services/apiClient";
+import { colors, typography, spacing, radius, elevation } from "./GlobalStyles/theme";
 
 const { width } = Dimensions.get("window");
 
@@ -44,7 +45,7 @@ const WeatherWidget = ({ location = "Cluj-Napoca" }) => {
   if (loading || !data) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="small" color="#000" />
+        <ActivityIndicator size="small" color={colors.primaryMuted} />
         <Text style={styles.loadingText}>Se încarcă vremea...</Text>
       </View>
     );
@@ -100,40 +101,44 @@ const WeatherWidget = ({ location = "Cluj-Napoca" }) => {
 const styles = StyleSheet.create({
   container: {
     width: width - 32,
-    backgroundColor: "#AFD6B1",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    marginHorizontal: 16,
-    marginBottom: 10,
+    backgroundColor: colors.surface,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.sm,
+    ...elevation.card,
   },
   loadingContainer: {
     width: width - 32,
-    backgroundColor: "#AFD6B1",
-    padding: 8,
-    borderRadius: 12,
-    marginHorizontal: 16,
-    marginBottom: 10,
+    backgroundColor: colors.surface,
+    padding: spacing.sm,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.sm,
     flexDirection: "row",
     alignItems: "center",
   },
   loadingText: {
-    marginLeft: 8,
-    color: "#000",
-    fontSize: 13,
+    ...typography.caption,
+    marginLeft: spacing.xs,
+    color: colors.textSecondary,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 6,
+    marginBottom: spacing.xs,
   },
   left: {
     flexDirection: "column",
   },
   location: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#000",
+    ...typography.subtitle,
+    color: colors.primary,
     marginBottom: 2,
   },
   tempRow: {
@@ -142,41 +147,45 @@ const styles = StyleSheet.create({
   },
   emoji: {
     fontSize: 22,
-    marginRight: 4,
+    marginRight: spacing.xxs,
   },
   temperature: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#000",
+    ...typography.metric,
+    fontSize: 24,
+    lineHeight: 28,
+    color: colors.textPrimary,
   },
   right: {
     alignItems: "flex-end",
     justifyContent: "center",
   },
   detailText: {
-    fontSize: 12,
-    color: "#000",
+    ...typography.caption,
+    color: colors.textSecondary,
     marginVertical: 1,
   },
 
   hourlyScroll: {
-    marginTop: 6,
-    paddingBottom: 4,
-    maxHeight: 90,
+    marginTop: spacing.xs,
+    paddingBottom: spacing.xxs,
+    maxHeight: 96,
   },
   hourlyItem: {
-    backgroundColor: "rgba(255,255,255,0.3)",
-    borderRadius: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginHorizontal: 4,
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.chip,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.xs,
+    marginHorizontal: spacing.xxs,
     alignItems: "center",
     width: 56,
   },
   hourText: {
-    fontSize: 11,
-    color: "#333",
-    fontWeight: "bold",
+    ...typography.eyebrow,
+    fontSize: 10,
+    letterSpacing: 0.4,
+    color: colors.textSecondary,
     marginBottom: 2,
   },
   hourIcon: {
@@ -184,9 +193,9 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   hourTemp: {
-    fontSize: 13,
-    color: "#000",
-    fontWeight: "bold",
+    ...typography.metricSmall,
+    fontSize: 12,
+    color: colors.textPrimary,
   },
 });
 

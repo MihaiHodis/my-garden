@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { VictoryChart, VictoryBar, VictoryAxis, VictoryStack } from 'victory-native';
+import { colors, fonts } from './GlobalStyles/theme';
 
 const screenWidth = Dimensions.get('window').width;
+
+const IN_RANGE_COLOR = 'rgba(74,122,82,1)';   // moss green
+const OUT_RANGE_COLOR = 'rgba(192,73,47,1)';  // earthy rust
 
 const VictoryStackedBarChart = ({ chartDetails, onDrillDown }) => {
     const { title, dateLabels, displayLabels, datasets } = chartDetails;
@@ -56,11 +60,11 @@ const VictoryStackedBarChart = ({ chartDetails, onDrillDown }) => {
             {/* Legend (No changes here) */}
             <View style={styles.legendContainer}>
                 <View style={styles.legendItem}>
-                    <View style={[styles.legendSymbol, { backgroundColor: 'rgba(175, 214, 177, 1)' }]} />
+                    <View style={[styles.legendSymbol, { backgroundColor: IN_RANGE_COLOR }]} />
                     <Text style={styles.legendText}>În Parametrii</Text>
                 </View>
                 <View style={styles.legendItem}>
-                    <View style={[styles.legendSymbol, { backgroundColor: 'rgba(211, 132, 132, 1)' }]} />
+                    <View style={[styles.legendSymbol, { backgroundColor: OUT_RANGE_COLOR }]} />
                     <Text style={styles.legendText}>În Afara Parametrilor</Text>
                 </View>
             </View>
@@ -81,18 +85,18 @@ const VictoryStackedBarChart = ({ chartDetails, onDrillDown }) => {
                         tickFormat={(t) => `${t}%`}
                         style={{
                             axis: { stroke: 'transparent' },
-                            tickLabels: { fontSize: 12, fill: '#666' },
-                            grid: { stroke: '#e0e0e0', strokeDasharray: '4, 4' }
+                            tickLabels: { fontSize: 12, fill: colors.textSecondary, fontFamily: fonts.mono },
+                            grid: { stroke: 'rgba(30,70,50,0.10)', strokeDasharray: '4, 4' }
                         }}
                     />
                     <VictoryAxis
                         tickValues={displayLabels}
-                        style={{ tickLabels: { fontSize: 14, fill: '#333', padding: 5 } }}
+                        style={{ tickLabels: { fontSize: 13, fill: colors.textPrimary, fontFamily: fonts.body, padding: 5 } }}
                     />
 
                     {/* Visible Stacked Bars */}
                     <VictoryStack
-                        colorScale={['rgba(175, 214, 177, 1)', 'rgba(211, 132, 132, 1)']}
+                        colorScale={[IN_RANGE_COLOR, OUT_RANGE_COLOR]}
                     >
                         <VictoryBar data={inRangeData} barWidth={baseBarWidth} />
                         <VictoryBar data={outOfRangeData} barWidth={baseBarWidth} />
@@ -107,9 +111,9 @@ const VictoryStackedBarChart = ({ chartDetails, onDrillDown }) => {
                             tickFormat={() => `${Math.round(data.y)}%`}
                             style={{
                                 tickLabels: {
-                                    fontSize: 14,
-                                    fill: '#2e7d32',
-                                    fontWeight: 'bold',
+                                    fontSize: 13,
+                                    fill: colors.primary,
+                                    fontFamily: fonts.monoBold,
                                     padding: 5,
                                     verticalAnchor: 'start',
                                     dy: 17
@@ -123,7 +127,7 @@ const VictoryStackedBarChart = ({ chartDetails, onDrillDown }) => {
                         <VictoryBar
                             data={totalData.filter(d => d.originalDate === selectedDate)}
                             barWidth={itemWidth - 20}
-                            style={{ data: { fill: 'rgba(99, 105, 116, 0.55)' } }}
+                            style={{ data: { fill: 'rgba(30,70,50,0.22)' } }}
                         />
                     )}
 
@@ -147,8 +151,8 @@ const VictoryStackedBarChart = ({ chartDetails, onDrillDown }) => {
 
 const styles = StyleSheet.create({
     container: { alignItems: 'center', width: '100%' },
-    title: { fontSize: 16, fontWeight: '500', marginBottom: 4 },
-    drillDownHint: { fontSize: 12, color: '#666', marginBottom: 8, fontStyle: 'italic'},
+    title: { fontFamily: fonts.display, fontSize: 17, color: colors.primary, marginBottom: 4 },
+    drillDownHint: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary, marginBottom: 8, fontStyle: 'italic'},
     legendContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -167,8 +171,9 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
     legendText: {
+        fontFamily: fonts.body,
         fontSize: 12,
-        color: '#333',
+        color: colors.textSecondary,
     },
 });
 

@@ -1,25 +1,23 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
+import { colors, fonts } from "./theme";
 
 export const headerStyle = StyleSheet.create({
-  // Main Settings UI Styles (for settings list layout)
-
+  // Shared top title bar (Tehnică / Statistici / Setări)
   titleContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 0,
+    paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#AFD6B1",
-    borderBottomMarginTop: 4,
-    borderBottomHeight: 1,
+    borderBottomColor: colors.border,
     zIndex: 2,
-    backgroundColor: "#ffffffff",
+    backgroundColor: colors.surface,
   },
 
   title: {
+    fontFamily: fonts.display,
     fontSize: 26,
-    fontWeight: "600",
-    color: "#212121",
+    color: colors.primary,
     textAlign: "center",
-    marginBottom: 10,
+    letterSpacing: -0.3,
   },
 });
 

@@ -4,6 +4,7 @@ import { Footer } from "../../components/Footer/Footer.js";
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Modal, FlatList, KeyboardAvoidingView, Platform, Linking } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { settingsStyles, contactStyles } from "../../components/GlobalStyles/settingsStyles";
+import { colors } from "../../components/GlobalStyles/theme";
 import { SendIcon, ChevronLeftIcon, EmailIcon, WebsiteIcon, ChevronDownIcon } from "../../assets/settings-icons/icons";
 import { submitContact } from "../../services/apiClient";
 
@@ -30,7 +31,7 @@ const Contact = () => {
   };
 
   const subject = 'Support Request from App';
-  const body = 'Hello ByteStorm Team,\n\nI need help with...';
+  const body = 'Salut echipa mygarden,\n\nAm nevoie de ajutor cu...';
   const mailtoUrl = `mailto:support@bytestorm.ro?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   
@@ -129,13 +130,13 @@ Vă rog să descrieți mai jos ce ați încercat și ce ați observat:
           <Text style={selectedCategory ? contactStyles.dropdownButtonText : contactStyles.dropdownButtonPlaceholder}>
             {selectedCategory ? selectedCategory.label : "Selectează categoria"}
           </Text>
-          <ChevronDownIcon size={20} style={{ color: "#666" }} />
+          <ChevronDownIcon size={20} style={{ color: colors.textSecondary }} />
         </TouchableOpacity>
         <Modal visible={showCategoryPicker} transparent={true} animationType="fade" onRequestClose={() => setShowCategoryPicker(false)}>
-          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <View style={{ backgroundColor: "white", borderTopLeftRadius: 16, borderTopRightRadius: 16 }}>
-              <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: "#eee" }}>
-                <Text style={{ fontSize: 18, fontWeight: "600", textAlign: "center" }}>
+          <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(30,70,50,0.45)" }}>
+            <View style={{ backgroundColor: colors.surface, borderTopLeftRadius: 18, borderTopRightRadius: 18 }}>
+              <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: colors.divider }}>
+                <Text style={{ fontSize: 18, fontWeight: "600", textAlign: "center", color: colors.textPrimary }}>
                   Selectează categoria
                 </Text>
               </View>
@@ -144,21 +145,21 @@ Vă rog să descrieți mai jos ce ați încercat și ce ați observat:
                 keyExtractor={(item) => item.value}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: "#f0f0f0" }}
+                    style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: colors.divider }}
                     onPress={() => {
                       handleChange("category", item.value);
                       setShowCategoryPicker(false);
                     }}>
-                    <Text style={{ fontSize: 16, color: formData.category === item.value ? "#2e7d32" : "#333" }}>
+                    <Text style={{ fontSize: 16, color: formData.category === item.value ? colors.primary : colors.textPrimary }}>
                       {item.label}
                     </Text>
                   </TouchableOpacity>
                 )}
               />
               <TouchableOpacity
-                style={{ padding: 16, alignItems: "center", borderTopWidth: 1, borderTopColor: "#eee" }}
+                style={{ padding: 16, alignItems: "center", borderTopWidth: 1, borderTopColor: colors.divider }}
                 onPress={() => setShowCategoryPicker(false)}>
-                <Text style={{ fontSize: 16, color: "#666" }}>Anulează</Text>
+                <Text style={{ fontSize: 16, color: colors.textSecondary }}>Anulează</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -176,7 +177,7 @@ Vă rog să descrieți mai jos ce ați încercat și ce ați observat:
         <View style={settingsStyles.paper}>
           <TouchableOpacity style={settingsStyles.headerBox} onPress={handleBackToSettings} activeOpacity={0.8}>
             <View style={settingsStyles.backIcon}>
-              <ChevronLeftIcon size={24} style={{ color: "black" }} />
+              <ChevronLeftIcon size={24} style={{ color: colors.textPrimary }} />
             </View>
             <View style={settingsStyles.headerContent}>
               <Text style={settingsStyles.headerTitle}>Suport și Contact</Text>
@@ -220,7 +221,7 @@ Vă rog să descrieți mai jos ce ați încercat și ce ați observat:
                     <TextInput style={contactStyles.textInput} placeholder="Adresa ta de email pentru răspuns" value={formData.email} onChangeText={(value) => handleChange("email", value)} keyboardType="email-address" autoCapitalize="none" returnKeyType="done" />
                   </View>
                   <TouchableOpacity style={loading ? contactStyles.submitButtonDisabled : contactStyles.submitButton} onPress={handleSubmit} disabled={loading} activeOpacity={0.8}>
-                    <SendIcon size={20} style={{ color: loading ? "#888" : "black" }} />
+                    <SendIcon size={20} style={{ color: loading ? colors.textTertiary : colors.textOnDark }} />
                     <Text style={loading ? contactStyles.submitButtonTextDisabled : contactStyles.submitButtonText}>
                       {loading ? "Se trimite..." : "Trimite mesajul"}
                     </Text>
@@ -232,7 +233,7 @@ Vă rog să descrieți mai jos ce ați încercat și ce ați observat:
               <View style={settingsStyles.contentBox}>
                 <Text style={contactStyles.contactInfoText}>Ne puteți găsi la:</Text>
                 <View style={contactStyles.contactInfoItem}>
-                  <EmailIcon size={16} style={{ color: "rgba(175, 214, 177, 1)" }} />
+                  <EmailIcon size={16} style={{ color: colors.primary }} />
                   <TouchableOpacity onPress={() => handleLinkPress(mailtoUrl)}>
                     <Text style={contactStyles.contactInfoValue}>
                       support@bytestorm.ro
@@ -240,7 +241,7 @@ Vă rog să descrieți mai jos ce ați încercat și ce ați observat:
                   </TouchableOpacity>
                 </View>
                 <View style={contactStyles.contactInfoItem}>
-                  <WebsiteIcon size={16} style={{ color: "rgba(175, 214, 177, 1)" }} />
+                  <WebsiteIcon size={16} style={{ color: colors.primary }} />
                   <TouchableOpacity onPress={() => console.log('Link pressed')}>
                     {/* Added an inline style to make it look like a link */}
                     <Text style={contactStyles.contactInfoValue}>

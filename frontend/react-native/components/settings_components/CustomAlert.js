@@ -1,6 +1,7 @@
 // components/CustomAlert.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { colors, typography, spacing, radius, elevation } from '../GlobalStyles/theme';
 
 const CustomAlert = ({
   visible,
@@ -51,37 +52,33 @@ const CustomAlert = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(30,70,50,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: spacing.md,
   },
   alertBox: {
     width: '100%',
     maxWidth: 320,
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 24,
+    backgroundColor: colors.surface,
+    borderRadius: radius.card,
+    padding: spacing.lg,
     alignItems: 'center',
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...elevation.raised,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333',
+    ...typography.heading,
+    marginBottom: spacing.xs,
+    color: colors.primary,
     textAlign: 'center',
   },
   message: {
-    fontSize: 16,
-    color: '#666',
+    ...typography.body,
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 22,
+    marginBottom: spacing.lg,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -90,29 +87,31 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 48,
   },
   buttonSpacer: {
-    marginLeft: 10,
+    marginLeft: spacing.xs,
   },
   defaultButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   destructiveButton: {
-    backgroundColor: '#ff3b30',
+    backgroundColor: colors.error,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.subtitle,
   },
   defaultButtonText: {
-    color: '#007aff',
+    color: colors.primary,
   },
   destructiveButtonText: {
-    color: 'white',
+    color: colors.textOnDark,
   },
 });
 

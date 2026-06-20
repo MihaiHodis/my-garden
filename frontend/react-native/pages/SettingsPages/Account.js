@@ -20,6 +20,7 @@ import {
   settingsStyles,
   accountStyles,
 } from "../../components/GlobalStyles/settingsStyles";
+import { colors } from "../../components/GlobalStyles/theme";
 
 import { ChevronLeftIcon, UserIcon } from "../../assets/settings-icons/icons";
 
@@ -29,6 +30,9 @@ import {
   updateUserById,
   testConnection,
   updateUserByIdViaPost,
+  syncUser,
+  getEffectiveUser,
+  BASE_URL,
 } from "../../services/apiClient";
 
 // Avatar mapping
@@ -39,6 +43,7 @@ const avatarMap = {
   "avatar_4.png": require("../../assets/avatars/avatar_4.png"),
   "avatar_5.png": require("../../assets/avatars/avatar_5.png"),
   "avatar_6.png": require("../../assets/avatars/avatar_6.png"),
+  "Den.jpg": require("../../assets/avatars/Den.jpg"),
 };
 
 const avatarOptions = [
@@ -48,6 +53,7 @@ const avatarOptions = [
   "avatar_4.png",
   "avatar_5.png",
   "avatar_6.png",
+  "Den.jpg",
 ];
 
 // ... (Avatar component remains the same)
@@ -56,12 +62,12 @@ const Avatar = ({ avatarName, size = 90, isSelected = false }) => {
     width: size,
     height: size,
     borderRadius: size / 2,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: colors.surfaceMuted,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: isSelected ? "#2e7d32" : "#e0e0e0",
+    borderColor: isSelected ? colors.accent : colors.border,
   };
 
   const avatarSource = avatarMap[avatarName];
@@ -76,7 +82,7 @@ const Avatar = ({ avatarName, size = 90, isSelected = false }) => {
         />
       ) : (
         <View style={accountStyles.avatarFallback}>
-          <UserIcon size={size * 0.6} style={{ color: "#999" }} />
+          <UserIcon size={size * 0.6} style={{ color: colors.textTertiary }} />
         </View>
       )}
     </View>
@@ -141,7 +147,7 @@ const NicknameField = ({
             key="nickname-input"
             style={[
               accountStyles.fieldInput,
-              isUpdating && { backgroundColor: "#f5f5f5" },
+              isUpdating && { backgroundColor: colors.surfaceMuted },
             ]}
             value={nickname}
             onChangeText={handleNicknameInputChange}
@@ -154,7 +160,7 @@ const NicknameField = ({
           {isUpdating && (
             <ActivityIndicator
               size="small"
-              color="#2e7d32"
+              color={colors.primary}
               style={{ position: "absolute", right: 10, top: 15 }}
             />
           )}
@@ -178,26 +184,22 @@ const Account = () => {
 
   const HEADER_HEIGHT = 40;
 
-  // ... (All functions like getCurrentUserId, loadUserData, etc. remain the same)
   const getCurrentUserId = () => {
     if (route.params?.userId) return route.params.userId;
     if (route.params?.id) return route.params.id;
-    return "1"; // fallback
+    
+    const currentUser = getEffectiveUser();
+    if (currentUser) return currentUser.uid;
+    
+    return null;
   };
 
   const loadUserData = async () => {
     const currentUserId = getCurrentUserId();
 
-    if (!currentUserId) {
-      setError("No user ID provided. Please log in again.");
-      setLoading(false);
-      setRefreshing(false);
-      return;
-    }
-
     try {
       console.log("=== LOADING USER DATA ===");
-      console.log("User ID:", currentUserId);
+      console.log("User ID from params/fallback:", currentUserId);
 
       const connectionTest = await testConnection();
       console.log("Connection test result:", connectionTest);
@@ -206,14 +208,24 @@ const Account = () => {
         throw new Error("Cannot connect to server");
       }
 
-      const response = await getUserById(currentUserId);
+      let response;
+      // If we don't have a specific userId from params, use syncUser() 
+      // which is more secure (uses the Bearer token directly)
+      if (!route.params?.userId && !route.params?.id) {
+        console.log("Using syncUser() to get current logged in user data");
+        response = await syncUser();
+      } else {
+        console.log("Using getUserById() for specific ID:", currentUserId);
+        response = await getUserById(currentUserId);
+      }
+
       console.log("User data response:", response);
 
       if (response && response.data) {
         setUserData(response.data);
         setNickname(response.data.nickname || "");
         setError(null);
-        setDebugInfo(`✓ Data loaded for user ${currentUserId}`);
+        setDebugInfo(`✓ Data loaded for user ${response.data.firebase_uid || response.data.id}`);
       } else {
         throw new Error("No user data received");
       }
@@ -359,7 +371,7 @@ const Account = () => {
         User ID: {getCurrentUserId()}
       </Text>
       <Text style={{ fontSize: 12, fontFamily: "monospace", marginTop: 5 }}>
-        Server: Local development
+        Server: {BASE_URL} (__DEV__={String(__DEV__)})
       </Text>
       <Text style={{ fontSize: 12, fontFamily: "monospace", marginTop: 5 }}>
         Current Avatar: {userData?.avatar || "none"}
@@ -398,7 +410,7 @@ const Account = () => {
           activeOpacity={0.8}
         >
           <View style={settingsStyles.backIcon}>
-            <ChevronLeftIcon size={24} style={{ color: "black" }} />
+            <ChevronLeftIcon size={24} style={{ color: colors.textPrimary }} />
           </View>
           <View style={settingsStyles.headerContent}>
             <Text style={settingsStyles.headerTitle}>Profil</Text>
@@ -416,8 +428,8 @@ const Account = () => {
       <View style={settingsStyles.container}>
         <PageHeader />
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 50 }}>
-            <ActivityIndicator size="large" color="#2e7d32" />
-            <Text style={{ marginTop: 8, color: "#666" }}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={{ marginTop: 8, color: colors.textSecondary }}>
               Se încarcă datele utilizatorului...
             </Text>
         </View>
@@ -484,7 +496,7 @@ const Account = () => {
 
                 {error && (
                   <View style={{ marginBottom: 16 }}>
-                    <Text style={{ color: "red", textAlign: "center" }}>
+                    <Text style={{ color: colors.error, textAlign: "center" }}>
                       {error}
                     </Text>
                   </View>
